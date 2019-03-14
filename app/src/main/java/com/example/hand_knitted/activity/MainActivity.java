@@ -1,7 +1,9 @@
-package com.example.hand_knitted;
+package com.example.hand_knitted.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.example.hand_knitted.R;
 
 public class MainActivity extends AppCompatActivity {
 
