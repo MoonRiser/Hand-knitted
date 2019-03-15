@@ -7,18 +7,18 @@ import cn.bmob.v3.Bmob;
 
 public class MyApplication extends Application {
 
-    private static Context context;
+    private  Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
         context=getApplicationContext();
-        Bmob.initialize(this, "Your Application ID","bmob");
+        Bmob.initialize(this, "5bb030d2c8976622d951f1fb49e61ffc");
     }
 
 
 
-    public Context getContext(){
+    public  Context getContext(){
         return context;
     }
 
