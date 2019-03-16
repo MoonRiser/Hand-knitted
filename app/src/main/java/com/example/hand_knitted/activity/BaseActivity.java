@@ -1,4 +1,4 @@
-package com.example.hand_knitted.view.activity;
+package com.example.hand_knitted.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
