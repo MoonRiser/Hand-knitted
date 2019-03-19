@@ -40,8 +40,8 @@ public class LoginActivity extends BaseActivity {
     private RadioGroup radioGroup;
 
     private String account;
-    private Boolean isRemenber;
     private String password;
+    private Boolean isRemenber;
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private View dialogRegister;
@@ -66,8 +66,6 @@ public class LoginActivity extends BaseActivity {
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
-        account = name.getText().toString();
-        password = pwd.getText().toString();
         isRemenber = sp.getBoolean("remember_password", false);
 
         /*如果选中记住密码，则*/
@@ -170,12 +168,14 @@ public class LoginActivity extends BaseActivity {
     //负责登陆账号密码的判断
     private void loginBmob() {
 
+        account = name.getText().toString();
+        password = pwd.getText().toString();
         if (account.length() == 0 || password.length() == 0) {//当账号或密码的输入为空时提示
             showToast("输入为空，请重试");
             //Toast.makeText(this, "请输入账号密码", Toast.LENGTH_SHORT).show();
             return;
         }
-        BmobUser bu = new BmobUser();
+        User bu = new User();
         bu.setUsername(account);
         bu.setPassword(password);
         bu.login(new SaveListener<BmobUser>() {
@@ -217,7 +217,7 @@ public class LoginActivity extends BaseActivity {
         String sex;
         int id = radioGroup.getCheckedRadioButtonId();
         if (R.id.male == id) {
-            sex = "fame";
+            sex = "male";
         } else {
             sex = "female";
         }
@@ -227,17 +227,23 @@ public class LoginActivity extends BaseActivity {
             return;
         }
 
-        User bu = new User();
+        final User bu = new User();
         bu.setUsername(userStr);
         bu.setPassword(passwdStr);
         bu.setSex(sex);
+        //Log.i("性别是否空指针",bu.getSex().toString());
+        //Log.i("用户名是否空指针",bu.getUsername().toString());
+
         bu.signUp(new SaveListener<BmobUser>() {
             @Override
             public void done(BmobUser s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(LoginActivity.this, "注册成功:" + s.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "注册成功:"+bu.getUsername()+"你好" , Toast.LENGTH_LONG).show();
                 } else {
                     Log.i("bmob", "注册失败：" + e.getMessage() + "," + e.getErrorCode());
+                    if (e.getErrorCode() == 202) {
+                        showToastLong("用户名已被注册，请更换");
+                    }
                 }
             }
         });

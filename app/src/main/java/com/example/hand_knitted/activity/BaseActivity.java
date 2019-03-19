@@ -20,4 +20,14 @@ public class BaseActivity extends AppCompatActivity {
         }
         toast.show();
     }
+
+    public void  showToastLong(String content){
+        if(toast==null){
+            toast=Toast.makeText(this,content,Toast.LENGTH_LONG);
+        }else {
+            toast.setText(content);
+        }
+        toast.show();
+    }
+
 }
