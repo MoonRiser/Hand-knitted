@@ -215,6 +215,7 @@ public class LoginActivity extends BaseActivity {
         String userStr = nameStr.getText().toString();
         String passwdStr = pwdStr.getText().toString();
         String sex;
+        radioGroup.check(R.id.male);//默认选择男性
         int id = radioGroup.getCheckedRadioButtonId();
         if (R.id.male == id) {
             sex = "male";
