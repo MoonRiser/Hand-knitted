@@ -1,8 +1,10 @@
 package com.example.hand_knitted.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -14,6 +16,10 @@ import cn.bmob.v3.BmobUser;
 public class SplashActivity extends BaseActivity {
     private final int TIME =3500;
     private Intent intent;
+    private SharedPreferences sp;
+    private Boolean isRookie;
+    private ImageView imageView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +27,7 @@ public class SplashActivity extends BaseActivity {
         setFullScreen();
         setContentView(R.layout.activity_splash);
 
-        ImageView imageView = findViewById(R.id.IVlogo);
+        init();
         Glide.with(this).load(R.drawable.ic_knit).into(imageView);
 
 
@@ -30,7 +36,13 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void run() {
                 if (BmobUser.isLogin()){
-                    intent= new Intent(SplashActivity.this,MainActivity.class);
+
+                    if (isRookie){
+                        intent = new Intent(SplashActivity.this, RookieActivity.class);
+                    }else {
+                        intent= new Intent(SplashActivity.this,MainActivity.class);
+                    }
+
                 }else{
                     intent= new Intent(SplashActivity.this,LoginActivity.class);
                 }
@@ -38,6 +50,7 @@ public class SplashActivity extends BaseActivity {
                 SplashActivity.this.finish();
             }
         }, TIME);
+
     }
 
 
@@ -50,6 +63,11 @@ public class SplashActivity extends BaseActivity {
 
     }
 
+    private void init(){
+        imageView = findViewById(R.id.IVlogo);
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        isRookie = sp.getBoolean("isRookie",true);
+    }
 
 
 }

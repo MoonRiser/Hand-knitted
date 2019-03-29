@@ -15,30 +15,29 @@
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
-        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".activity.RookieActivity"></activity>
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.example.hand_knitted.BmobContentProvider">
-        </provider>
-
+            android:authorities="com.example.hand_knitted.BmobContentProvider"></provider>
 
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:theme="@style/HideStatusBarTheme">
-        </activity>
-        <activity android:name=".activity.MainActivity"></activity>
+            android:theme="@style/HideStatusBarTheme"></activity>
+        <activity android:name=".activity.MainActivity" />
     </application>
 
 </manifest>

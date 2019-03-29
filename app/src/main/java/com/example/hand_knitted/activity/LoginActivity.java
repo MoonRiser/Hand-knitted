@@ -192,7 +192,8 @@ public class LoginActivity extends BaseActivity {
                     }
 
                     editor.apply();
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                  //  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    Intent intent = new Intent(LoginActivity.this, RookieActivity.class);
                     startActivity(intent);
                     finish();
                 } else {
