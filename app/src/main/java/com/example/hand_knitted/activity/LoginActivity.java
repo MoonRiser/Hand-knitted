@@ -23,6 +23,8 @@ import android.widget.Toast;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.bean.User;
 
+import org.jetbrains.annotations.NotNull;
+
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -114,7 +116,9 @@ public class LoginActivity extends BaseActivity {
     }
 
 
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NotNull String permissions[], @NotNull int[] grantResults) {
+
 
         switch (requestCode) {
             case 1:

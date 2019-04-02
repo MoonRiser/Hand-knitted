@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" /> <!-- 保持CPU 运转，屏幕和键盘灯有可能是关闭的,用于文件上传和下载 -->
     <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 允许读取手机状态 用于创建BmobInstallation -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:name=".util.MyApplication"
@@ -21,11 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.RookieActivity"></activity>
+        <activity android:name=".activity.FeedActivity"></activity>
+        <activity android:name=".activity.RookieActivity" />
 
         <provider
             android:name="cn.bmob.v3.util.BmobContentProvider"
-            android:authorities="com.example.hand_knitted.BmobContentProvider"></provider>
+            android:authorities="com.example.hand_knitted.BmobContentProvider" />
 
         <activity android:name=".activity.SplashActivity">
             <intent-filter>
@@ -36,7 +38,7 @@
         </activity>
         <activity
             android:name=".activity.LoginActivity"
-            android:theme="@style/HideStatusBarTheme"></activity>
+            android:theme="@style/HideStatusBarTheme" />
         <activity android:name=".activity.MainActivity" />
     </application>
 

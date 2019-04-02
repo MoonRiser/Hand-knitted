@@ -1,3 +1,27 @@
 <resources>
     <string name="app_name">Hand-knitted</string>
+
+    <string-array name="tool">
+        <item>t1</item>
+        <item>t2</item>
+        <item>t3</item>
+    </string-array>
+
+
+    <string-array name="group">
+        <item>g1</item>
+        <item>g2</item>
+        <item>g3</item>
+        <item>g4</item>
+        <item>g5</item>
+    </string-array>
+
+    <string-array name="style">
+        <item>s1</item>
+        <item>s2</item>
+        <item>s3</item>
+        <item>s4</item>
+        <item>s5</item>
+    </string-array>
+
 </resources>
