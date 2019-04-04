@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="tool">
+        <item>工具/全</item>
+        <item>棒织</item>
+        <item>编织</item>
+        <item>钩织结合</item>
+    </string-array>
+
+
+    <string-array name="group">
+        <item>适用/全</item>
+        <item>儿童</item>
+        <item>女式</item>
+        <item>男式</item>
+        <item>婴幼儿</item>
+        <item>中老年</item>
+    </string-array>
+
+    <string-array name="style">
+        <item>款式/全</item>
+        <item>麻花</item>
+        <item>提花</item>
+        <item>雪花</item>
+        <item>流苏</item>
+        <item>叶子花</item>
+    </string-array>
+
+
+</resources>

@@ -5,8 +5,8 @@ import java.util.List;
 public class Work {
 
 
-    Post post;
-    List<Comment> comments;
+    private Post post;
+    private List<Comment> comments;
 
 
     public Work(Post post, List<Comment> comments) {

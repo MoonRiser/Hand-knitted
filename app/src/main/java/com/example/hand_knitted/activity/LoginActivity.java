@@ -8,8 +8,8 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +25,7 @@ import com.example.hand_knitted.bean.User;
 
 import org.jetbrains.annotations.NotNull;
 
+import butterknife.BindView;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -32,13 +33,20 @@ import cn.bmob.v3.listener.SaveListener;
 
 public class LoginActivity extends BaseActivity {
 
-    private EditText name;
-    private EditText pwd;
+
+    @BindView(R.id.ETname)
+    public EditText name;
+    @BindView(R.id.CBremenber)
+    public CheckBox remPWD;
+    @BindView(R.id.BTlogin)
+    public Button login;
+    @BindView(R.id.BTregister)
+    public Button register;
+    @BindView(R.id.ETpwd)
+    public EditText pwd;
+
     private EditText nameStr;//注册的对话框组件
     private EditText pwdStr;//同上
-    private CheckBox remPWD;
-    private Button login;
-    private Button register;
     private RadioGroup radioGroup;
 
     private String account;
@@ -60,11 +68,11 @@ public class LoginActivity extends BaseActivity {
 
 
     private void init() {
-        name = findViewById(R.id.ETname);
-        pwd = findViewById(R.id.ETpwd);
-        remPWD = findViewById(R.id.CBremenber);
-        login = findViewById(R.id.BTlogin);
-        register = findViewById(R.id.BTregister);
+      //  name = findViewById(R.id.ETname);
+      //   pwd = findViewById(R.id.ETpwd);
+      //  remPWD = findViewById(R.id.CBremenber);
+      //  login = findViewById(R.id.BTlogin);
+      //  register = findViewById(R.id.BTregister);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();

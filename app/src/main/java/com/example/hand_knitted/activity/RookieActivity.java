@@ -12,11 +12,16 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 
+import butterknife.BindView;
+
 public class RookieActivity extends BaseActivity implements View.OnClickListener {
 
-    private ImageView stick;
-    private ImageView hook;
-    private Button skip;
+    @BindView(R.id.IMGstick)
+    public ImageView stick;
+    @BindView(R.id.IMGhook)
+    public ImageView hook;
+    @BindView(R.id.BTskip)
+    public Button skip;
     private SharedPreferences.Editor editor;
 
 
@@ -46,9 +51,9 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
 
 
     private void init(){
-        stick = findViewById(R.id.IMGstick);
-        hook = findViewById(R.id.IMGhook);
-        skip = findViewById(R.id.BTskip);
+     //   stick = findViewById(R.id.IMGstick);
+     //   hook = findViewById(R.id.IMGhook);
+     //   skip = findViewById(R.id.BTskip);
         editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 
 

@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 
+import butterknife.BindView;
 import cn.bmob.v3.BmobUser;
 
 public class SplashActivity extends BaseActivity {
@@ -18,7 +19,8 @@ public class SplashActivity extends BaseActivity {
     private Intent intent;
     private SharedPreferences sp;
     private Boolean isRookie;
-    private ImageView imageView;
+    @BindView(R.id.IVlogo)
+    public ImageView imageView;
 
 
     @Override
@@ -40,7 +42,8 @@ public class SplashActivity extends BaseActivity {
                     if (isRookie){
                         intent = new Intent(SplashActivity.this, RookieActivity.class);
                     }else {
-                        intent= new Intent(SplashActivity.this,MainActivity.class);
+                        // intent= new Intent(SplashActivity.this,MainActivity.class);
+                        intent= new Intent(SplashActivity.this,FeedActivity.class);
                     }
 
                 }else{
@@ -64,7 +67,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void init(){
-        imageView = findViewById(R.id.IVlogo);
+     //   imageView = findViewById(R.id.IVlogo);
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         isRookie = sp.getBoolean("isRookie",true);
     }
