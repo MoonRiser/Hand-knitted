@@ -1,23 +1,9 @@
 package com.example.hand_knitted.fragment;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import butterknife.BindView;
-import butterknife.BindViews;
-import butterknife.ButterKnife;
-import butterknife.OnItemSelected;
-import butterknife.Unbinder;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.bean.Work;
@@ -25,6 +11,15 @@ import com.example.hand_knitted.bean.Work;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnItemSelected;
+import butterknife.Unbinder;
 
 
 public class FeedFragment extends Fragment {
