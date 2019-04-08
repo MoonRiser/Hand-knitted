@@ -11,9 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.activity.BaseActivity;
 import com.example.hand_knitted.activity.WorkDetailActivity;
+import com.example.hand_knitted.bean.Comment;
 import com.example.hand_knitted.bean.Work;
 
 import java.util.List;
@@ -88,7 +90,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         Work work = workList.get(position);
         ViewHolder viewHolder = (ViewHolder)holder;
-       // viewHolder.avatar.setTextAndColor(work.getPost().getAuthor(),R.color.colorAccent);
+        String name = work.getPost().getAuthor().getUsername();
+        viewHolder.avatar.setTextAndColorSeed(name.substring(0,1),name);
+        viewHolder.title.setText(work.getPost().getTitle());
+        viewHolder.tool.setText(work.getPost().getTool());
+        viewHolder.group.setText(work.getPost().getGroup());
+        viewHolder.style.setText(work.getPost().getStyle());
+        Glide.with(context).load(work.getPost().getImage()).into(viewHolder.img);
+        viewHolder.comment.setText(commentHelper(work));
+
+
     }
 
     @Override
@@ -99,6 +110,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
 
 
+    //likes，comment，share按钮的点击事件
     @Override
     public void onClick(View v) {
         switch (v.getId()){
@@ -119,6 +131,22 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         context.startActivity(intent);
 
     }
+
+
+    private String commentHelper(Work work){
+
+        StringBuilder str = new StringBuilder("\n");
+        String item;
+        List<Comment> comments = work.getComments();
+
+        for (Comment comment: comments) {
+            item = comment.getAuthor().getUsername()+": "+comment.getContent()+"\n";
+            str.append(item);
+        }
+        return str.toString();
+
+    }
+
 
 
 

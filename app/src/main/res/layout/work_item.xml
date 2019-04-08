@@ -78,7 +78,7 @@
             android:id="@+id/TVcomment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:padding="8dp"
             android:maxLines="4"
             android:ellipsize="end"
             android:text="TextView//nfg" />

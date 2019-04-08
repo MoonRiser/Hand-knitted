@@ -28,21 +28,24 @@ public class HKModel extends FindListener<Post> implements IHKModel {
 
         BmobQuery<Post> query = new BmobQuery<>();
 
-        String str[] = keyword.split("\\.");//传入的keyword形式必须如 tool.2 ，分割成tool（工具） 和 2（编织）
-        String key = str[0];//数据库表的列
-        String option = str[1];//列对应的值
+        String str[] = keyword.split("\\.");//传入的keyword形式必须如 3.1.5  ;分裂成 3(工具：钩织结合)，1(适用：儿童)，5(款式：叶子花);0表示全部all
 
-        switch (key) {
-            case "tool":
-                query.addWhereEqualTo("tool", option);
-                break;
-            case "group":
-                query.addWhereEqualTo("group", option);
-                break;
-            case "style":
-                query.addWhereEqualTo("style", option);
-                break;
+
+        if (!"0".equals(str[0])) {
+            query.addWhereEqualTo("tool", str[0]);
         }
+
+
+        if (!"0".equals(str[1])) {
+            query.addWhereEqualTo("group", str[1]);
+        }
+
+
+        if (!"0".equals(str[2])) {
+            query.addWhereEqualTo("style", str[2]);
+        }
+
+
         query.addWhereEqualTo("isSnap", isSnap);//判断查询帖子还是随拍
         query.setLimit(500);
         query.order("createdAt"); //排序
@@ -80,7 +83,7 @@ public class HKModel extends FindListener<Post> implements IHKModel {
 
 
     @Override
-    public void done(List list, BmobException e) {
+    public void done(List<Post> list, BmobException e) {
 
         if (e == null) {
             prepareData(list);

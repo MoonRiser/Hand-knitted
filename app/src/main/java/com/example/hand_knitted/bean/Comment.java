@@ -6,8 +6,8 @@ import cn.bmob.v3.datatype.BmobPointer;
 public class Comment extends BmobObject {
 
     private String content;//评论内容
-    private BmobPointer post;//评论对应的帖子
-    private BmobPointer author;//发评论的人
+    private Post post;//评论对应的帖子
+    private User author;//发评论的人
 
 
     public String getContent() {
@@ -18,19 +18,19 @@ public class Comment extends BmobObject {
         this.content = content;
     }
 
-    public BmobPointer getPost() {
+    public Post getPost() {
         return post;
     }
 
-    public void setPost(BmobPointer post) {
+    public void setPost(Post post) {
         this.post = post;
     }
 
-    public BmobPointer getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(BmobPointer author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 }
