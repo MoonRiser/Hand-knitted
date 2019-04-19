@@ -8,6 +8,13 @@ import java.util.List;
 public interface IHKPresenter {
 
     void request(String keyword,Boolean isSnap);
+    void setFavoritePost(Post post);
+    void cancelFavoritePost(Post post);
+
     void requestSuccess(List<Work> result);
     void requestFail(String info);
+    void updateSuccess(String info);
+    void updateFail(String info);
+
+
 }

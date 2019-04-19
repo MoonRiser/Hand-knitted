@@ -7,5 +7,6 @@ public interface IHKView {
     void showData(List<Work> list);
     void showProgress(Boolean show);
     void showFailInfo(String info);
+    void showSuccessInfo(String info);
 
 }

@@ -136,4 +136,11 @@ public class FeedFragment extends Fragment implements IHKView {
         Log.i("Bmob请求错误", info);
 
     }
+
+
+    @Override
+    public void showSuccessInfo(String info) {
+
+        Toast.makeText(getActivity(), info, Toast.LENGTH_LONG).show();
+    }
 }

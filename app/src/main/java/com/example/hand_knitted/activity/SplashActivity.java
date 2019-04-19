@@ -43,7 +43,7 @@ public class SplashActivity extends BaseActivity {
                         intent = new Intent(SplashActivity.this, RookieActivity.class);
                     }else {
                         // intent= new Intent(SplashActivity.this,MainActivity.class);
-                        intent= new Intent(SplashActivity.this,FeedActivity.class);
+                        intent= new Intent(SplashActivity.this,MainActivity.class);
                     }
 
                 }else{

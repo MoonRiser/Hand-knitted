@@ -248,9 +248,9 @@ public class LoginActivity extends BaseActivity {
         //Log.i("性别是否空指针",bu.getSex().toString());
         //Log.i("用户名是否空指针",bu.getUsername().toString());
 
-        bu.signUp(new SaveListener<BmobUser>() {
+        bu.signUp(new SaveListener<User>() {
             @Override
-            public void done(BmobUser s, BmobException e) {
+            public void done(User s, BmobException e) {
                 if (e == null) {
                     Toast.makeText(LoginActivity.this, "注册成功:"+bu.getUsername()+"你好" , Toast.LENGTH_LONG).show();
                 } else {

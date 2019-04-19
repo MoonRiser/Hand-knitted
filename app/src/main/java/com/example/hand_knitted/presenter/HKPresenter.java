@@ -1,6 +1,7 @@
 package com.example.hand_knitted.presenter;
 
 
+import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.model.HKModel;
 import com.example.hand_knitted.model.IHKModel;
@@ -11,6 +12,9 @@ import java.util.List;
 public class HKPresenter implements IHKPresenter {
 
     private IHKModel model;
+
+
+
     private IHKView view;
 
 
@@ -25,6 +29,18 @@ public class HKPresenter implements IHKPresenter {
         model.requestData(keyword,isSnap);
     }
 
+
+    @Override
+    public void setFavoritePost(Post post) {
+        model.setFavorite(post);
+    }
+
+
+    @Override
+    public void cancelFavoritePost(Post post) {
+        model.cancelFavorite(post);
+    }
+
     @Override
     public void requestSuccess(List<Work> result) {
         view.showProgress(false);
@@ -36,5 +52,16 @@ public class HKPresenter implements IHKPresenter {
         view.showProgress(false);
         view.showFailInfo(info);
 
+    }
+
+
+    @Override
+    public void updateSuccess(String info) {
+        view.showSuccessInfo(info);
+    }
+
+    @Override
+    public void updateFail(String info) {
+        view.showFailInfo(info);
     }
 }

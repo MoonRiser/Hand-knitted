@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.FavoriteFragment">
+    tools:context=".fragment.MyWorkFragment">
 
 
     <LinearLayout
@@ -39,30 +39,19 @@
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/TVme"
                     android:layout_toEndOf="@id/TVme"
-                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginStart="16dp"
                     android:src="@drawable/ic_female" />
 
-                <Button
-                    android:id="@+id/BTme"
-                    style="@style/Widget.AppCompat.Button.Borderless"
+                <TextView
+                    android:id="@+id/TV6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/TVme"
-                    android:layout_marginStart="24dp"
+                    android:layout_alignBottom="@id/IMGsex"
+                    android:layout_marginStart="32dp"
                     android:layout_toEndOf="@id/IMGsex"
-                    android:text="我的"
-                    android:textSize="20sp" />
-
-                <Button
-                    android:id="@+id/BTlikes2"
-                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/BTme"
-                    android:layout_toEndOf="@id/BTme"
-                    android:layout_marginStart="8dp"
-                    android:text="收藏"
-                    android:textSize="20sp" />
+                    android:text="我的帖子"
+                    android:textSize="18sp" />
 
             </RelativeLayout>
         </androidx.cardview.widget.CardView>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <cn.carbs.android.avatarimageview.library.AvatarImageView
+                android:id="@+id/IMGavatar"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                app:aiv_CornerRadius="24dp"
+                app:aiv_ShowBoarder="false"
+                app:aiv_TextSizeRatio="0.5" />
+
+            <TextView
+                android:id="@+id/TVtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:layout_alignTop="@id/IMGavatar"
+                android:layout_toEndOf="@id/IMGavatar"
+                android:text="关于钩织的一点心得体会"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/TVtool"
+                android:layout_width="56dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/IMGavatar"
+                android:layout_toEndOf="@id/IMGavatar"
+                android:text="钩织结合" />
+
+            <TextView
+                android:id="@+id/TVgroup"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/IMGavatar"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/TVtool"
+                android:text="婴幼儿" />
+
+            <TextView
+                android:id="@+id/TVstyle"
+                android:layout_width="48dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/IMGavatar"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/TVgroup"
+                android:text="叶子花" />
+
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/IMGwork"
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:scaleType="centerCrop"
+            tools:srcCompat="@tools:sample/avatars" />
+
+    </LinearLayout>
+</>

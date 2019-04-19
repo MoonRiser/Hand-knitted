@@ -16,7 +16,7 @@ import com.example.hand_knitted.R;
 
 
 
-public class FavoriteFragment extends Fragment {
+public class MyWorkFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
