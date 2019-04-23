@@ -14,7 +14,7 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="96dp" >
+            android:layout_height="96dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -25,8 +25,8 @@
                     android:id="@+id/TVme"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
                     android:layout_centerVertical="true"
+                    android:layout_marginStart="16dp"
                     android:text="王境泽"
                     android:textAlignment="center"
 
@@ -38,9 +38,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/TVme"
-                    android:layout_toEndOf="@id/TVme"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginStart="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:layout_toEndOf="@id/TVme"
                     android:src="@drawable/ic_female" />
 
                 <TextView
@@ -53,11 +53,28 @@
                     android:text="我的帖子"
                     android:textSize="18sp" />
 
+                <Button
+                    android:id="@+id/BTrefresh"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@id/TVme"
+                    android:layout_marginStart="16dp"
+                    android:layout_toEndOf="@id/TV6"
+                    android:text="刷新"
+                    android:textSize="18sp" />
+
             </RelativeLayout>
         </androidx.cardview.widget.CardView>
 
+        <ProgressBar
+            android:id="@+id/PB2"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/RVfavorite"
+            android:id="@+id/RVmywork"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

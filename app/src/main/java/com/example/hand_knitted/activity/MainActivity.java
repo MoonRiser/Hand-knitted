@@ -9,20 +9,20 @@ import butterknife.BindView;
 
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
-import android.util.Log;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.TabFragmentAdapter;
 import com.example.hand_knitted.fragment.FeedFragment;
+import com.example.hand_knitted.fragment.MyWorkFragment;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
 
-    @BindView(R.id.toolbar)
+    @BindView(R.id.TB2)
     public Toolbar toolbar;
     @BindView(R.id.pager)
     public ViewPager pager;
@@ -41,15 +41,16 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
 
         setSupportActionBar(toolbar);
+        initTabViewPager();
     }
 
 
     private void initTabViewPager() {
         final List<String> tabList = new ArrayList<>();
-        final int[] materalColor = getResources().getIntArray(R.array.custom_color);
-        tabList.add("星座故事");
-        tabList.add("笔记");
-        tabList.add("天气");
+        final int[] materalColor = getResources().getIntArray(R.array.material_color);
+       // tabList.add("Feed流");
+        tabList.add("本人作品");
+       // tabList.add("随拍");
 
         //final TabLayout tabLayout = findViewById(R.id.tabs);
         //  ViewPager viewPager = findViewById(R.id.view_pager);
@@ -78,9 +79,11 @@ public class MainActivity extends AppCompatActivity {
         //  tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         List<Fragment> fragmentList = new ArrayList<>();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment f1 = new FeedFragment();
+    //    Fragment f1 = new FeedFragment();
+        Fragment f2 = new MyWorkFragment();
 
-        fragmentList.add(f1);
+      //  fragmentList.add(f1);
+        fragmentList.add(f2);
 
         TabFragmentAdapter fragmentAdapter = new TabFragmentAdapter(fragmentManager, fragmentList, tabList);
         pager.setAdapter(fragmentAdapter);//给ViewPager设置适配器

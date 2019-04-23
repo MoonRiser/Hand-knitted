@@ -9,11 +9,14 @@
     </string-array>
 
 
-    <string-array name="custom_color">
-        <color name="red500">#F44336</color>
-        <color name="blue500">#2196F3</color>
-        <color name="orange500">#FF9800</color>
-    </string-array>
+    <array name="material_color">
+        <item>@color/teal500</item>
+        <item>@color/orange500</item>
+        <item>@color/blue500</item>
+        <item>@color/red500</item>
+        <item>@color/cyan500</item>
+    </array>
+
 
 
     <string-array name="group">

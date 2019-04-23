@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.FeedAdapter;
+import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.view.IHKView;
@@ -22,6 +23,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
@@ -35,7 +37,6 @@ public class FeedFragment extends Fragment implements IHKView {
     public RecyclerView recyclerView;
 
     private HKPresenter hkPresenter;
-    private List<Work> works;
     private Unbinder unbinder;
     private ProgressBar progressBar;
     private View view;
@@ -44,6 +45,7 @@ public class FeedFragment extends Fragment implements IHKView {
     private int tool;
     private int group;
     private int style;
+    private Toast toast;
 
     //tool spinner监听
     @OnItemSelected(R.id.spinner1)
@@ -89,10 +91,11 @@ public class FeedFragment extends Fragment implements IHKView {
         hkPresenter = new HKPresenter(this);
 
         hkPresenter.request("0.0.0", false);//表示全选
+
+
         recyclerView.setLayoutManager(new
                 StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        feedAdapter = new FeedAdapter(works);
-        recyclerView.setAdapter(feedAdapter);
+
 
     }
 
@@ -114,9 +117,10 @@ public class FeedFragment extends Fragment implements IHKView {
 
 
     @Override
-    public void showData(List<Work> list) {
+    public void showWorkData(List<Work> list) {
 
-        works = list;
+        feedAdapter = new FeedAdapter(list);
+        recyclerView.setAdapter(feedAdapter);
     }
 
     @Override
@@ -129,18 +133,20 @@ public class FeedFragment extends Fragment implements IHKView {
         }
     }
 
+
     @Override
-    public void showFailInfo(String info) {
+    public void showResultToast(String info) {
 
-        Toast.makeText(getActivity(), info, Toast.LENGTH_LONG).show();
-        Log.i("Bmob请求错误", info);
-
+        if(toast==null){
+            toast=Toast.makeText(this.getActivity(),info,Toast.LENGTH_SHORT);
+        }else {
+            toast.setText(info);
+        }
+        toast.show();
     }
 
-
     @Override
-    public void showSuccessInfo(String info) {
-
-        Toast.makeText(getActivity(), info, Toast.LENGTH_LONG).show();
+    public void showPostData(List<Post> posts) {
+        //空着/此View中用不上
     }
 }

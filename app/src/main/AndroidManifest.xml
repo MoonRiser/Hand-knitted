@@ -13,7 +13,6 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
@@ -23,7 +22,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".activity.WorkDetailActivity"></activity>
+        <activity android:name=".activity.EditPostActivity" />
+        <activity android:name=".activity.WorkDetailActivity" />
         <activity android:name=".activity.RookieActivity" />
 
         <provider

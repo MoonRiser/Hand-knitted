@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.activity.WorkDetailActivity;
+import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,17 +28,16 @@ import static android.content.Context.VIBRATOR_SERVICE;
 
 public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickListener , View.OnLongClickListener {
 
-    private List<Work> workList;
+
+    private List<Post> posts;
     private Context context;
     private int position;
     private ViewGroup parent;
 
 
-
-    public MyWorkAdapter(List<Work> workList) {
-        this.workList = workList;
+    public MyWorkAdapter(List<Post> posts) {
+        this.posts = posts;
     }
-
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         AvatarImageView avatar;
@@ -77,8 +77,9 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
         View view = LayoutInflater.from(context).inflate(R.layout.item_mywork,parent,false);
         //final FeedAdapter.ViewHolder holder = new FeedAdapter.ViewHolder(view);
         final MyWorkAdapter.ViewHolder holder = new MyWorkAdapter.ViewHolder(view);
+        position = holder.getAdapterPosition();
         holder.img.setOnClickListener(this);
-
+        holder.cardView.setOnLongClickListener(this);
 
 
         return holder;
@@ -87,18 +88,18 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-        this.position = position;
-        Work work = workList.get(position);
+       // this.position = position;
+        Post post = posts.get(position);
         //FeedAdapter.ViewHolder viewHolder = (FeedAdapter.ViewHolder)holder;
         MyWorkAdapter.ViewHolder viewHolder = (MyWorkAdapter.ViewHolder)holder;
-        String name = work.getPost().getAuthor().getUsername();
-        viewHolder.cardView.setOnLongClickListener(this);
+        String name = post.getAuthor().getUsername();
+
         viewHolder.avatar.setTextAndColorSeed(name.substring(0,1),name);
-        viewHolder.title.setText(work.getPost().getTitle());
-        viewHolder.tool.setText(work.getPost().getTool());
-        viewHolder.group.setText(work.getPost().getGroup());
-        viewHolder.style.setText(work.getPost().getStyle());
-        Glide.with(context).load(work.getPost().getImage()).into(viewHolder.img);
+        viewHolder.title.setText(post.getTitle());
+        viewHolder.tool.setText(post.getTool());
+        viewHolder.group.setText(post.getGroup());
+        viewHolder.style.setText(post.getStyle());
+        Glide.with(context).load(post.getImage()).into(viewHolder.img);
 
 
 
@@ -107,7 +108,7 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
 
     @Override
     public int getItemCount() {
-        return workList.size();
+        return posts.size();
     }
 
 
@@ -119,11 +120,6 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
         switch (v.getId()){
             case R.id.IMGwork: jumpAnotherActivity(WorkDetailActivity.class);
                 break;
-            case R.id.BTfavorite:
-                break;
-            case R.id.BTcomment:
-                break;
-
         }
 
     }
@@ -140,7 +136,7 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
         vibrator.vibrate(VibrationEffect.createOneShot(50,VibrationEffect.DEFAULT_AMPLITUDE));
 
         Snackbar.make(parent, "确定删除当前内容吗?", Snackbar.LENGTH_LONG).setAction("确定", v1 -> {
-            workList.remove(position);
+            posts.remove(position);
             notifyItemRemoved(position);
         }).show();
 

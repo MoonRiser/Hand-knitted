@@ -23,12 +23,20 @@ public class HKPresenter implements IHKPresenter {
         model = new HKModel(this);
     }
 
+
+
+
     @Override
     public void request(String keyword,Boolean isSnap) {
         view.showProgress(true);
         model.requestData(keyword,isSnap);
     }
 
+
+    @Override
+    public void inqueryPost() {
+        model.inqueryPost();
+    }
 
     @Override
     public void setFavoritePost(Post post) {
@@ -41,27 +49,45 @@ public class HKPresenter implements IHKPresenter {
         model.cancelFavorite(post);
     }
 
+
+    @Override
+    public void deletePost(Post post) {
+        model.deletePost(post);
+    }
+
+    @Override
+    public void addPost(Post post) {
+        model.addPost(post);
+    }
+
+
+    @Override
+    public void updatePost(Post post) {
+        model.updatePost(post);
+    }
+
+    @Override
+    public void inquerySuccess(List<Post> posts) {
+        view.showProgress(false);
+        view.showPostData(posts);
+    }
+
     @Override
     public void requestSuccess(List<Work> result) {
         view.showProgress(false);
-        view.showData(result);
+        view.showWorkData(result);
     }
 
     @Override
     public void requestFail(String info) {
         view.showProgress(false);
-        view.showFailInfo(info);
+        view.showResultToast(info);
 
     }
 
 
     @Override
-    public void updateSuccess(String info) {
-        view.showSuccessInfo(info);
-    }
-
-    @Override
-    public void updateFail(String info) {
-        view.showFailInfo(info);
+    public void updateResult(String info) {
+        view.showResultToast(info);
     }
 }
