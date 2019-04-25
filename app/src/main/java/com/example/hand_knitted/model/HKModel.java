@@ -23,12 +23,13 @@ import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 
-public class HKModel extends FindListener<Post> implements IHKModel {
+public class HKModel implements IHKModel {
 
 
     private IHKPresenter presenter;
-    private List<Work> works = new ArrayList<>();
+    //private List<Work> works = new ArrayList<>();
     private User currentUser = BmobUser.getCurrentUser(User.class);
+
     public HKModel(IHKPresenter presenter) {
         this.presenter = presenter;
     }
@@ -56,35 +57,34 @@ public class HKModel extends FindListener<Post> implements IHKModel {
             query.addWhereEqualTo("style", str[2]);
         }
 
+        Log.i("传入的keyword是否正确", str[0] + "/" + str[1] + "/" + str[2]);
 
         query.addWhereEqualTo("isSnap", isSnap);//判断查询帖子还是随拍
         query.include("author");
         query.setLimit(500);
         query.order("createdAt"); //排序
-        query.findObjects(this);
+        query.findObjects(new FindListener<Post>() {
+            @Override
+            public void done(List<Post> list, BmobException e) {
+
+                if (e == null) {
 
 
-    }
+                    if (list == null) {
+                        presenter.requestFail("没有查询到数据");
+                        return;
+                    }
+
+                    prepareData(list);
 
 
-    @Override
-    public void done(List<Post> list, BmobException e) {
-
-
-        if (e == null) {
-
-
-            if (list == null) {
-                presenter.requestFail("没有查询到数据");
-                return;
+                } else {
+                    presenter.requestFail("bmob 失败：" + e.getMessage() + "," + e.getErrorCode());
+                }
             }
+        });
 
-            prepareData(list);
 
-
-        } else {
-            presenter.requestFail("bmob 失败：" + e.getMessage() + "," + e.getErrorCode());
-        }
     }
 
 
@@ -153,7 +153,7 @@ public class HKModel extends FindListener<Post> implements IHKModel {
                     presenter.inquerySuccess(posts);
                 } else {
                     presenter.requestFail("查询当前用户帖子失败");
-                    Log.i("查询本人作品出错",e.getMessage()+e.getErrorCode());
+                    Log.i("查询本人作品出错", e.getMessage() + e.getErrorCode());
                 }
             }
 
@@ -229,14 +229,13 @@ public class HKModel extends FindListener<Post> implements IHKModel {
     }
 
     //将Post和comment构造成Work类型
-    private void prepareData(List<Post> list) {
+    private void prepareData(List<Post> posts) {
 
         BmobQuery<Comment> queryComment = new BmobQuery<>();
-
-
-        for (int i = 0; i < list.size(); i++) {
-            Post post = list.get(i);
-            queryComment.addWhereEqualTo("post", post.getAuthor());
+        List<Work> works= new ArrayList<>();
+        for (int i = 0; i < posts.size(); i++) {
+            Post post = posts.get(i);
+            queryComment.addWhereEqualTo("post", post);
             queryComment.setLimit(500);
             queryComment.include("author");
             queryComment.order("createdAt"); //排序
@@ -245,7 +244,7 @@ public class HKModel extends FindListener<Post> implements IHKModel {
                 public void done(List<Comment> list, BmobException e) {
                     if (e == null) {
                         works.add(new Work(post, list));
-                        if (works.size() == list.size())//等数据都准备好再回调
+                        if (works.size() == posts.size())//等数据都准备好再回调
                             presenter.requestSuccess(works);
                     } else {
                         presenter.requestFail("bmob评论部分失败：" + e.getMessage() + "," + e.getErrorCode());
@@ -258,7 +257,7 @@ public class HKModel extends FindListener<Post> implements IHKModel {
     }
 
     //批量删除
-    private void deleteBatchCommment(List<Comment> comments){
+    private void deleteBatchCommment(List<Comment> comments) {
 
         List<BmobObject> bmobObjects = new ArrayList<>(comments);
 
@@ -271,7 +270,7 @@ public class HKModel extends FindListener<Post> implements IHKModel {
                         BatchResult result = results.get(i);
                         BmobException ex = result.getError();
                         if (ex == null) {
-                            presenter.updateResult("第" + i + "个评论批量删除成功：" );
+                            presenter.updateResult("第" + i + "个评论批量删除成功：");
                         } else {
                             presenter.updateResult("第" + i + "个评论批量删除失败：" + ex.getMessage() + "," + ex.getErrorCode());
 
@@ -284,7 +283,6 @@ public class HKModel extends FindListener<Post> implements IHKModel {
             }
         });
     }
-
 
 
 }

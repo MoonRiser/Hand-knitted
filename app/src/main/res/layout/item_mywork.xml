@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,6 +34,8 @@
                 android:layout_marginEnd="16dp"
                 android:layout_alignTop="@id/IMGavatar"
                 android:layout_toEndOf="@id/IMGavatar"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="关于钩织的一点心得体会"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -70,7 +73,7 @@
         <ImageView
             android:id="@+id/IMGwork"
             android:layout_width="match_parent"
-            android:layout_height="240dp"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
             tools:srcCompat="@tools:sample/avatars" />
 

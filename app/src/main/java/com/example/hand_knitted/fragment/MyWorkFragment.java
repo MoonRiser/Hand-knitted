@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,10 +17,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.activity.EditPostActivity;
 import com.example.hand_knitted.adapter.MyWorkAdapter;
 import com.example.hand_knitted.bean.Post;
+import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
@@ -30,6 +34,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.bmob.v3.BmobUser;
 
 
 public class MyWorkFragment extends Fragment implements IHKView, View.OnClickListener {
@@ -37,8 +42,16 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
 
     @BindView(R.id.RVmywork)
     public RecyclerView recyclerView;
+
     @BindView(R.id.BTrefresh)
     public Button refresh;
+
+    @BindView(R.id.TVme)
+    public TextView me;
+
+    @BindView(R.id.IMGsex)
+    public ImageView sex;
+
     @BindView(R.id.FABadd)
     public FloatingActionButton fab;
 
@@ -48,6 +61,7 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     private Unbinder unbinder;
     private MyWorkAdapter myWorkAdapter;
     private Toast toast;
+    private Boolean iSFirstTime = true;
 
     @Nullable
     @Override
@@ -63,11 +77,20 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
         super.onActivityCreated(savedInstanceState);
         progressBar = view.findViewById(R.id.PB2);
         presenter = new HKPresenter(this);
+        myWorkAdapter = new MyWorkAdapter();
         presenter.inqueryPost();
         recyclerView.setLayoutManager(new
-                StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         refresh.setOnClickListener(this);
         fab.setOnClickListener(this);
+
+        User myself = BmobUser.getCurrentUser(User.class);
+        me.setText(myself.getUsername());
+        if("male".equals(myself.getSex())){
+            Glide.with(getActivity()).load(R.drawable.ic_male).into(sex);
+        }else {
+            Glide.with(getActivity()).load(R.drawable.ic_female).into(sex);
+        }
 
 
     }
@@ -94,8 +117,13 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     @Override
     public void showPostData(List<Post> posts) {
 
-        myWorkAdapter = new MyWorkAdapter(posts);
-        recyclerView.setAdapter(myWorkAdapter);
+        myWorkAdapter.setPosts(posts);
+        if(iSFirstTime){
+            recyclerView.setAdapter(myWorkAdapter);
+            iSFirstTime = false;
+        }
+        myWorkAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -124,6 +152,7 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
 
             case R.id.FABadd:
                 Intent intent = new Intent(getActivity(), EditPostActivity.class);
+                intent.putExtra("isADD",true);//发表新帖子和更新旧帖子用同一个EditPostActivity，所以用这个标志区分一下
                 startActivity(intent);
                 break;
         }

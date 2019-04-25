@@ -9,6 +9,7 @@ import butterknife.BindView;
 
 import android.animation.ArgbEvaluator;
 import android.os.Bundle;
+import android.view.Menu;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.TabFragmentAdapter;
@@ -38,6 +39,12 @@ public class MainActivity extends BaseActivity {
     }
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_for_ma,menu);
+        return true;
+    }
+
     private void init() {
 
         setSupportActionBar(toolbar);
@@ -48,7 +55,7 @@ public class MainActivity extends BaseActivity {
     private void initTabViewPager() {
         final List<String> tabList = new ArrayList<>();
         final int[] materalColor = getResources().getIntArray(R.array.material_color);
-       // tabList.add("Feed流");
+        tabList.add("Feed流");
         tabList.add("本人作品");
        // tabList.add("随拍");
 
@@ -64,6 +71,7 @@ public class MainActivity extends BaseActivity {
                 toolbar.setBackgroundColor(evaluate);
                 //     statusView.setBackgroundColor(evaluate);
                 getWindow().setNavigationBarColor(evaluate);
+                getWindow().setStatusBarColor(evaluate);
             }
 
             @Override
@@ -79,10 +87,10 @@ public class MainActivity extends BaseActivity {
         //  tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         List<Fragment> fragmentList = new ArrayList<>();
         FragmentManager fragmentManager = getSupportFragmentManager();
-    //    Fragment f1 = new FeedFragment();
+        Fragment f1 = new FeedFragment();
         Fragment f2 = new MyWorkFragment();
 
-      //  fragmentList.add(f1);
+        fragmentList.add(f1);
         fragmentList.add(f2);
 
         TabFragmentAdapter fragmentAdapter = new TabFragmentAdapter(fragmentManager, fragmentList, tabList);

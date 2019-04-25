@@ -5,14 +5,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.FeedAdapter;
 import com.example.hand_knitted.bean.Post;
+import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
+import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.view.IHKView;
 
 import org.jetbrains.annotations.NotNull;
@@ -28,6 +33,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
 import butterknife.Unbinder;
+import cn.bmob.v3.BmobUser;
 
 
 public class FeedFragment extends Fragment implements IHKView {
@@ -36,7 +42,8 @@ public class FeedFragment extends Fragment implements IHKView {
     @BindView(R.id.feed)
     public RecyclerView recyclerView;
 
-    private HKPresenter hkPresenter;
+
+    private IHKPresenter hkPresenter;
     private Unbinder unbinder;
     private ProgressBar progressBar;
     private View view;
@@ -47,9 +54,12 @@ public class FeedFragment extends Fragment implements IHKView {
     private int style;
     private Toast toast;
 
+    private Boolean isFirstTime = true;
+
     //tool spinner监听
     @OnItemSelected(R.id.spinner1)
     void onToolItemSelected(int position) {
+        Log.i("spinner点击监听回调已执行tool：",String.valueOf(position));
         tool = position;
         refreshData();
     }
@@ -89,8 +99,9 @@ public class FeedFragment extends Fragment implements IHKView {
         progressBar = view.findViewById(R.id.PB);
 
         hkPresenter = new HKPresenter(this);
-
+        feedAdapter = new FeedAdapter(hkPresenter);
         hkPresenter.request("0.0.0", false);//表示全选
+
 
 
         recyclerView.setLayoutManager(new
@@ -112,15 +123,20 @@ public class FeedFragment extends Fragment implements IHKView {
     private void refreshData() {
         String keyword = tool + "." + group + "." + style;
         hkPresenter.request(keyword, false);
-        feedAdapter.notifyDataSetChanged();
+
     }
 
 
     @Override
     public void showWorkData(List<Work> list) {
 
-        feedAdapter = new FeedAdapter(list);
-        recyclerView.setAdapter(feedAdapter);
+
+        feedAdapter.setWorkList(list);
+        if(isFirstTime){
+            recyclerView.setAdapter(feedAdapter);
+            isFirstTime = false;
+        }
+        feedAdapter.notifyDataSetChanged();
     }
 
     @Override

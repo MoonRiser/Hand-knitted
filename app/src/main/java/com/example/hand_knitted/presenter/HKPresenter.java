@@ -35,6 +35,7 @@ public class HKPresenter implements IHKPresenter {
 
     @Override
     public void inqueryPost() {
+        view.showProgress(true);
         model.inqueryPost();
     }
 

@@ -2,6 +2,7 @@ package com.example.hand_knitted.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +20,7 @@ import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
+import com.example.hand_knitted.util.MyUtils;
 import com.example.hand_knitted.view.IHKView;
 
 import java.util.List;
@@ -28,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobPointer;
+import cn.bmob.v3.datatype.BmobRelation;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener,
@@ -41,10 +44,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
 
 
-    public FeedAdapter(List<Work> workList) {
-        this.workList = workList;
+    public FeedAdapter(IHKPresenter presenter) {
+        this.presenter = presenter;
     }
 
+    public void setWorkList(List<Work> workList) {
+        this.workList = workList;
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         AvatarImageView avatar;
@@ -83,9 +89,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
         if(context==null){
             context = parent.getContext();
-            if(context instanceof IHKView){
-                presenter = new HKPresenter((IHKView) context);
-            }
 
         }
 
@@ -93,29 +96,41 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         final ViewHolder holder = new ViewHolder(view);
         holder.img.setOnClickListener(this);
         holder.commentBT.setOnClickListener(this);
-        currentWork = workList.get(holder.getAdapterPosition());
-        holder.likes.setOnCheckedChangeListener(this);
+       // currentWork = workList.get(holder.getAdapterPosition());
+       // holder.likes.setOnCheckedChangeListener(this);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
+
         Work work = workList.get(position);
         ViewHolder viewHolder = (ViewHolder)holder;
+        currentWork = workList.get(holder.getAdapterPosition());
+        viewHolder.likes.setOnCheckedChangeListener(this);
         String name = work.getPost().getAuthor().getUsername();
         viewHolder.avatar.setTextAndColorSeed(name.substring(0,1),name);
         viewHolder.title.setText(work.getPost().getTitle());
-        viewHolder.tool.setText(work.getPost().getTool());
-        viewHolder.group.setText(work.getPost().getGroup());
-        viewHolder.style.setText(work.getPost().getStyle());
-        Glide.with(context).load(work.getPost().getImage()).into(viewHolder.img);
+        viewHolder.tool.setText(MyUtils.tool[Integer.parseInt(work.getPost().getTool())-1] );
+        viewHolder.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup())-1]);
+        viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle())-1]);
+        Glide.with(context).load(work.getPost().getImage().getFileUrl()).into(viewHolder.img);
         viewHolder.comment.setText(commentHelper(work));
         //如果当前帖子已经被收藏，则显示出来
-        List<BmobPointer> list = work.getPost().getLikes().getObjects();
-        BmobPointer user = new BmobPointer(BmobUser.getCurrentUser(User.class));
-        if(list.contains(user)){
-            viewHolder.likes.setChecked(true);
+        BmobRelation likes = work.getPost().getLikes();
+        if(likes!=null){
+            List<BmobPointer> list = likes.getObjects();
+            BmobPointer user = new BmobPointer(BmobUser.getCurrentUser(User.class));
+            for (BmobPointer p : list) {
+                Log.i("p的id为：",p.getObjectId());
+                if(user.getObjectId().equals(p.getObjectId())){
+                    Log.i("当你看到这个的时候","likes已经被checked了");
+                    viewHolder.likes.setChecked(true);
+                }
+
+            }
+
         }
 
 
@@ -132,6 +147,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     //收藏 toggleButton需要监听状态改变
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
         if(isChecked){
             presenter.setFavoritePost(currentWork.getPost());
         }else {
