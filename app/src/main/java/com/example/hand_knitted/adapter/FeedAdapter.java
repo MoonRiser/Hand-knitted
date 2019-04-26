@@ -33,15 +33,15 @@ import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements View.OnClickListener,
-        CompoundButton.OnCheckedChangeListener {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
 
 
     private List<Work> workList;
     private Context context;
     private IHKPresenter presenter;
     private Work currentWork;
-
+    private List<String> ids;
+    private Boolean isClicked = true;
 
 
     public FeedAdapter(IHKPresenter presenter) {
@@ -50,6 +50,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
     public void setWorkList(List<Work> workList) {
         this.workList = workList;
+    }
+
+    public void setIds(List<String> ids) {
+        this.ids = ids;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -64,7 +68,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
         Button commentBT;
         Button share;
 
-        ViewHolder(View view){
+        ViewHolder(View view) {
             super(view);
             avatar = view.findViewById(R.id.IMGavatar);
             title = view.findViewById(R.id.TVtitle);
@@ -81,24 +85,24 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
 
-
-
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        if(context==null){
+        if (context == null) {
             context = parent.getContext();
 
         }
 
-        View view = LayoutInflater.from(context).inflate(R.layout.item_work,parent,false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_work, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-        holder.img.setOnClickListener(this);
-        holder.commentBT.setOnClickListener(this);
-       // currentWork = workList.get(holder.getAdapterPosition());
-       // holder.likes.setOnCheckedChangeListener(this);
+         //currentWork = workList.get(holder.getLayoutPosition());
+
+
+
         return holder;
+
+
     }
 
     @Override
@@ -106,34 +110,54 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
 
 
         Work work = workList.get(position);
-        ViewHolder viewHolder = (ViewHolder)holder;
-        currentWork = workList.get(holder.getAdapterPosition());
-        viewHolder.likes.setOnCheckedChangeListener(this);
+        currentWork= work;
+        ViewHolder viewHolder = (ViewHolder) holder;
+        //viewHolder.likes.setOnCheckedChangeListener(this);
         String name = work.getPost().getAuthor().getUsername();
-        viewHolder.avatar.setTextAndColorSeed(name.substring(0,1),name);
+        viewHolder.avatar.setTextAndColorSeed(name.substring(0, 1), name);
         viewHolder.title.setText(work.getPost().getTitle());
-        viewHolder.tool.setText(MyUtils.tool[Integer.parseInt(work.getPost().getTool())-1] );
-        viewHolder.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup())-1]);
-        viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle())-1]);
+        viewHolder.tool.setText(MyUtils.tool[Integer.parseInt(work.getPost().getTool()) - 1]);
+        viewHolder.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup()) - 1]);
+        viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle()) - 1]);
         Glide.with(context).load(work.getPost().getImage().getFileUrl()).into(viewHolder.img);
         viewHolder.comment.setText(commentHelper(work));
+        viewHolder.img.setOnClickListener(v -> jumpAnotherActivity(WorkDetailActivity.class));
+        viewHolder.commentBT.setOnClickListener(v -> {
+
+        });
+        viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
+
+            if (isClicked) {
+                if (isChecked) {
+                    presenter.setFavoritePost(currentWork.getPost());
+                    Log.i("点击收藏","已经被回调");
+                } else {
+                    presenter.cancelFavoritePost(currentWork.getPost());
+                    Log.i("点击取消", "已经被回调");
+                }
+            } else {
+                isClicked = true;
+            }
+        });
+
         //如果当前帖子已经被收藏，则显示出来
-        BmobRelation likes = work.getPost().getLikes();
-        if(likes!=null){
-            List<BmobPointer> list = likes.getObjects();
-            BmobPointer user = new BmobPointer(BmobUser.getCurrentUser(User.class));
-            for (BmobPointer p : list) {
-                Log.i("p的id为：",p.getObjectId());
-                if(user.getObjectId().equals(p.getObjectId())){
-                    Log.i("当你看到这个的时候","likes已经被checked了");
+        if (ids.size() != 0) {
+
+
+        //    Log.i("当前position为：",position+"/对应的postID为："+currentWork.getPost().getObjectId());
+          //  Log.i("ids的size是多少呢？","是："+ids.size());
+                //    Log.i("Like表返回的postid打印", id + "/当前的id：" + currentWork.getPost().getObjectId());
+                if (ids.contains(currentWork.getPost().getObjectId())) {
+                    isClicked = false;
+                 //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
                     viewHolder.likes.setChecked(true);
+                }else {
+                    isClicked=false;
+                    viewHolder.likes.setChecked(false);
                 }
 
-            }
 
         }
-
-
 
 
     }
@@ -144,54 +168,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> i
     }
 
 
-    //收藏 toggleButton需要监听状态改变
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-        if(isChecked){
-            presenter.setFavoritePost(currentWork.getPost());
-        }else {
-            presenter.cancelFavoritePost(currentWork.getPost());
-        }
-    }
-
-    //comment，share按钮的点击事件
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.IMGwork: jumpAnotherActivity(WorkDetailActivity.class);
-                break;
-
-            case R.id.BTcomment:
-                break;
-
-        }
-
-    }
 
 
-    private void jumpAnotherActivity(Class cls){
+    private void jumpAnotherActivity(Class cls) {
         Intent intent = new Intent(context, cls);
         context.startActivity(intent);
 
     }
 
 
-    private String commentHelper(Work work){
+    private String commentHelper(Work work) {
 
         StringBuilder str = new StringBuilder("\n");
         String item;
         List<Comment> comments = work.getComments();
 
-        for (Comment comment: comments) {
-            item = comment.getAuthor().getUsername()+": "+comment.getContent()+"\n";
+        for (Comment comment : comments) {
+            item = comment.getAuthor().getUsername() + ": " + comment.getContent() + "\n";
             str.append(item);
         }
         return str.toString();
 
     }
-
-
 
 
 }

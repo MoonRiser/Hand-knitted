@@ -14,12 +14,14 @@ public interface IHKPresenter {
     void addPost(Post post);//发表新的帖子
     void inqueryPost();//查询本用户所有的发帖，可以不带参数
     void updatePost(Post post);//更新用户对帖子做的更改
+    List<String> inqueryLikePost();
 
 
     void requestSuccess(List<Work> result);
     void inquerySuccess(List<Post> posts);
     void requestFail(String info);
     void updateResult(String info);
+
 
 
 

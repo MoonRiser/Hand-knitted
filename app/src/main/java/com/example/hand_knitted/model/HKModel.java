@@ -3,6 +3,7 @@ package com.example.hand_knitted.model;
 import android.util.Log;
 
 import com.example.hand_knitted.bean.Comment;
+import com.example.hand_knitted.bean.Like;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
@@ -95,9 +96,9 @@ public class HKModel implements IHKModel {
             @Override
             public void done(BmobException e) {
                 if (e == null) {
-                    presenter.updateResult("删除帖子成功");
+                    presenter.updateResult("云端帖子删除成功");
                 } else {
-                    presenter.updateResult("删除帖子失败" + e.getErrorCode() + e.getErrorCode());
+                    presenter.updateResult("云端帖子删除失败" + e.getErrorCode() + e.getErrorCode());
                 }
             }
         });
@@ -168,8 +169,10 @@ public class HKModel implements IHKModel {
             public void done(BmobException e) {
                 if (e == null) {
                     presenter.updateResult("帖子更新成功");
+                    Log.i("更新帖子成功","000000");
                 } else {
                     presenter.updateResult("帖子更新失败：" + e.getMessage() + e.getErrorCode());
+                    Log.i("更新帖子失败",e.getErrorCode()+e.getMessage());
                 }
             }
         });
@@ -178,26 +181,20 @@ public class HKModel implements IHKModel {
     @Override
     public void setFavorite(Post post) {
 
-        User user = BmobUser.getCurrentUser(User.class);
 
-        BmobRelation relation = new BmobRelation();
-//将当前用户添加到多对多关联中
-        relation.add(user);
-//多对多关联指向`post`的`likes`字段
-        post.setLikes(relation);
-        post.update(new UpdateListener() {
+        Like like = new Like();
+        like.setPost(post);
+        like.setUser(BmobUser.getCurrentUser(User.class));
+        like.save(new SaveListener<String>() {
             @Override
-            public void done(BmobException e) {
+            public void done(String s, BmobException e) {
                 if (e == null) {
-                    //Log.i("bmob","多对多关联添加成功");
-                    presenter.updateResult("帖子收藏成功");
-
+                    presenter.updateResult("收藏成功");
                 } else {
-                    //Log.i("bmob","失败："+e.getMessage());
-                    presenter.updateResult("帖子收藏失败" + e.getMessage());
+                    presenter.updateResult("收藏失败：" + e.getErrorCode() + e.getMessage());
+                    Log.i("收藏失败：",e.getErrorCode()+e.getMessage());
                 }
             }
-
         });
 
     }
@@ -205,34 +202,74 @@ public class HKModel implements IHKModel {
     @Override
     public void cancelFavorite(Post post) {
 
-        User user = BmobUser.getCurrentUser(User.class);
 
-        BmobRelation relation = new BmobRelation();
-//将当前用户从多对多关联中删除
-        relation.remove(user);
-//多对多关联指向`post`的`likes`字段
-        post.setLikes(relation);
-        post.update(new UpdateListener() {
+        BmobQuery<Like> query = new BmobQuery<>();
+        query.addWhereEqualTo("user", BmobUser.getCurrentUser(User.class));
+        query.addWhereEqualTo("post", post);
+        query.findObjects(new FindListener<Like>() {
             @Override
-            public void done(BmobException e) {
+            public void done(List<Like> list, BmobException e) {
                 if (e == null) {
-                    //Log.i("bmob","多对多关联添加成功");
-                    presenter.updateResult("取消收藏成功");
+                    list.get(0).delete(new UpdateListener() {
+                                           @Override
+                                           public void done(BmobException e) {
 
+                                               if (e == null) {
+                                                   presenter.updateResult("成功取消收藏");
+                                               } else {
+                                                   presenter.updateResult("取消收藏失败");
+                                                   Log.i("取消收藏失败：", e.getMessage() + e.getErrorCode());
+
+                                               }
+                                           }
+                                       }
+                    );
                 } else {
-                    //Log.i("bmob","失败："+e.getMessage());
-                    presenter.updateResult("取消收藏失败" + e.getMessage());
+                    presenter.updateResult("查询Like表发生错误：" + e.getErrorCode() + e.getMessage());
+                    Log.i("查询Like表发生错误：",e.getErrorCode()+"");
                 }
             }
-
         });
+
+
+    }
+
+    @Override
+    public List<String> inqueryLikePost() {
+        BmobQuery<Like> query = new BmobQuery<>();
+        List<String> postsID = new ArrayList<>();
+        query.addWhereEqualTo("user", currentUser);
+        //  query.addWhereNotEqualTo("user",currentUser);
+        query.order("-updatedAt");
+        query.findObjects(new FindListener<Like>() {
+            @Override
+            public void done(List<Like> list, BmobException e) {
+                if (e == null) {
+                    if (list.size() == 0) {
+                        Log.i("查询回调的like list为空？", "是的");
+                        return;
+                    }
+
+
+                    for (Like like : list) {
+                        postsID.add(like.getPost().getObjectId());
+                        Log.i("查询like id：", like.getPost().getObjectId());
+                    }
+                } else {
+                    presenter.updateResult("Like的帖子查询失败");
+                }
+
+            }
+        });
+        return postsID;
+
     }
 
     //将Post和comment构造成Work类型
     private void prepareData(List<Post> posts) {
 
         BmobQuery<Comment> queryComment = new BmobQuery<>();
-        List<Work> works= new ArrayList<>();
+        List<Work> works = new ArrayList<>();
         for (int i = 0; i < posts.size(); i++) {
             Post post = posts.get(i);
             queryComment.addWhereEqualTo("post", post);

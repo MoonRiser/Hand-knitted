@@ -55,7 +55,7 @@
                 android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/IMGavatar"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:layout_toEndOf="@id/TVtool"
                 android:text="婴幼儿"
                 android:textSize="10sp" />
@@ -65,7 +65,7 @@
                 android:layout_width="32dp"
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/IMGavatar"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="4dp"
                 android:layout_toEndOf="@id/TVgroup"
                 android:text="叶子花"
                 android:textSize="10sp" />

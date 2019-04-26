@@ -28,8 +28,28 @@
                 app:aiv_TextSizeRatio="0.5" />
 
             <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2019.4.26"
+                android:layout_alignTop="@id/IMGavatar"
+                android:layout_marginEnd="8dp"
+                android:layout_alignParentEnd="true"/>
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/IMGavatar"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:text="21:51"
+                android:textSize="12sp"
+                android:textStyle="italic" />
+
+            <TextView
                 android:id="@+id/TVtitle"
-                android:layout_width="match_parent"
+                android:layout_width="240dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:layout_alignTop="@id/IMGavatar"

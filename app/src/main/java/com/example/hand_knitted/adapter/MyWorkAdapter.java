@@ -17,6 +17,7 @@ import com.example.hand_knitted.activity.EditPostActivity;
 import com.example.hand_knitted.activity.WorkDetailActivity;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
+import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.util.MyUtils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -29,18 +30,21 @@ import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
 import static android.content.Context.VIBRATOR_SERVICE;
 
-public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickListener , View.OnLongClickListener {
+public class MyWorkAdapter extends RecyclerView.Adapter  {
 
 
     private List<Post> posts;
     private Context context;
-    private int position;
     private ViewGroup parent;
-
-
+    private IHKPresenter presenter;
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+
+    public void setPresenter(IHKPresenter presenter) {
+        this.presenter = presenter;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,6 +55,8 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
         TextView style;
         ImageView img;
         CardView cardView;
+        TextView date;
+        TextView time;
 
 
         ViewHolder(View view){
@@ -61,6 +67,9 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
             group = view.findViewById(R.id.TVgroup);
             style = view.findViewById(R.id.TVstyle);
             img = view.findViewById(R.id.IMGwork);
+            date = view.findViewById(R.id.date);
+            time = view.findViewById(R.id.time);
+
             cardView = (CardView) view;
 
         }
@@ -92,13 +101,43 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
-       // this.position = position;
+
         Post post = posts.get(position);
-        //FeedAdapter.ViewHolder viewHolder = (FeedAdapter.ViewHolder)holder;
         MyWorkAdapter.ViewHolder viewHolder = (MyWorkAdapter.ViewHolder)holder;
-        this.position =position;
-        viewHolder.img.setOnClickListener(this);
-        viewHolder.cardView.setOnLongClickListener(this);
+        String dateTime = post.getDate();
+        String[] str = dateTime.split("\\.");
+
+        viewHolder.img.setOnClickListener(v -> {
+            switch (v.getId()){
+                case R.id.IMGwork: Intent intent = new Intent(context, EditPostActivity.class);
+                    Log.i("这次被点击的是第几个item呢？：",String.valueOf(position) );
+                    intent.putExtra("post",posts.get(position));
+                    context.startActivity(intent);
+                    break;
+            }
+        }
+        );
+        viewHolder.cardView.setOnLongClickListener(v -> {
+
+            //长按触发振动效果
+            Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
+            assert vibrator != null;
+            //vibrator.vibrate(50);
+            vibrator.vibrate(VibrationEffect.createOneShot(50,VibrationEffect.DEFAULT_AMPLITUDE));
+            Log.i("position被回调：",position+"");
+
+            Snackbar.make(parent, "确定删除当前内容吗?", Snackbar.LENGTH_LONG).setAction("确定", v1 -> {
+
+                presenter.deletePost(posts.get(position));
+                posts.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, getItemCount());
+            }).show();
+
+            return true;
+
+        }
+        );
         String name = post.getAuthor().getUsername();
 
         viewHolder.avatar.setTextAndColorSeed(name.substring(0,1),name);
@@ -106,6 +145,8 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
         viewHolder.tool.setText(MyUtils.tool[Integer.parseInt(post.getTool())-1] );
         viewHolder.group.setText(MyUtils.group[Integer.parseInt(post.getGroup())-1]);
         viewHolder.style.setText(MyUtils.style[Integer.parseInt(post.getStyle())-1]);
+        viewHolder.date.setText(str[0]);
+        viewHolder.time.setText(str[1]);
         Glide.with(context).load(post.getImage().getFileUrl()).into(viewHolder.img);
 
 
@@ -119,41 +160,6 @@ public class MyWorkAdapter extends RecyclerView.Adapter implements View.OnClickL
     }
 
 
-
-
-    //likes，comment，share按钮的点击事件
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.IMGwork: Intent intent = new Intent(context, EditPostActivity.class);
-                Log.i("这次被点击的是第几个item呢？：",String.valueOf(position) );
-            intent.putExtra("post",posts.get(position));
-            context.startActivity(intent);
-                break;
-        }
-
-    }
-
-
-    @Override
-    public boolean onLongClick(View v) {
-
-
-        //长按触发振动效果
-        Vibrator vibrator = (Vibrator) context.getSystemService(VIBRATOR_SERVICE);
-        assert vibrator != null;
-        //vibrator.vibrate(50);
-        vibrator.vibrate(VibrationEffect.createOneShot(50,VibrationEffect.DEFAULT_AMPLITUDE));
-
-        Snackbar.make(parent, "确定删除当前内容吗?", Snackbar.LENGTH_LONG).setAction("确定", v1 -> {
-            posts.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, getItemCount());
-        }).show();
-
-        return true;
-
-    }
 
 
 

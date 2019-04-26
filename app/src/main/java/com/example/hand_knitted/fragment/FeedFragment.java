@@ -82,6 +82,10 @@ public class FeedFragment extends Fragment implements IHKView {
     }
 
 
+    public IHKPresenter getHkPresenter() {
+        return hkPresenter;
+    }
+
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -100,6 +104,7 @@ public class FeedFragment extends Fragment implements IHKView {
 
         hkPresenter = new HKPresenter(this);
         feedAdapter = new FeedAdapter(hkPresenter);
+        feedAdapter.setIds(hkPresenter.inqueryLikePost());
         hkPresenter.request("0.0.0", false);//表示全选
 
 
@@ -120,7 +125,7 @@ public class FeedFragment extends Fragment implements IHKView {
     }
 
 
-    private void refreshData() {
+    public void refreshData() {
         String keyword = tool + "." + group + "." + style;
         hkPresenter.request(keyword, false);
 

@@ -78,6 +78,7 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
         progressBar = view.findViewById(R.id.PB2);
         presenter = new HKPresenter(this);
         myWorkAdapter = new MyWorkAdapter();
+        myWorkAdapter.setPresenter(presenter);
         presenter.inqueryPost();
         recyclerView.setLayoutManager(new
                 StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
@@ -102,6 +103,10 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
         unbinder.unbind();
     }
 
+
+    public IHKPresenter getPresenter() {
+        return presenter;
+    }
 
     @Override
     public void showProgress(Boolean show) {

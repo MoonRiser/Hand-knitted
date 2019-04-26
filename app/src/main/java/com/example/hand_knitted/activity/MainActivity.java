@@ -1,15 +1,14 @@
 package com.example.hand_knitted.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.animation.ArgbEvaluator;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Menu;
+
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
-import butterknife.BindView;
-
-import android.animation.ArgbEvaluator;
-import android.os.Bundle;
-import android.view.Menu;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.TabFragmentAdapter;
@@ -20,6 +19,8 @@ import com.google.android.material.tabs.TabLayout;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.BindView;
+
 public class MainActivity extends BaseActivity {
 
 
@@ -29,6 +30,9 @@ public class MainActivity extends BaseActivity {
     public ViewPager pager;
     @BindView(R.id.tab)
     public TabLayout tabs;
+
+    private Fragment f1;
+    private Fragment f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +45,17 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_for_ma,menu);
+        getMenuInflater().inflate(R.menu.menu_for_ma, menu);
         return true;
+    }
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        ((FeedFragment) f1).refreshData();
+        ((MyWorkFragment)f2).getPresenter().inqueryPost();
+       // Log.i("Activity的重新打开被回调", "yes");
     }
 
     private void init() {
@@ -57,7 +70,7 @@ public class MainActivity extends BaseActivity {
         final int[] materalColor = getResources().getIntArray(R.array.material_color);
         tabList.add("Feed流");
         tabList.add("本人作品");
-       // tabList.add("随拍");
+        // tabList.add("随拍");
 
         //final TabLayout tabLayout = findViewById(R.id.tabs);
         //  ViewPager viewPager = findViewById(R.id.view_pager);
@@ -87,8 +100,8 @@ public class MainActivity extends BaseActivity {
         //  tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         List<Fragment> fragmentList = new ArrayList<>();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment f1 = new FeedFragment();
-        Fragment f2 = new MyWorkFragment();
+         f1 = new FeedFragment();
+         f2 = new MyWorkFragment();
 
         fragmentList.add(f1);
         fragmentList.add(f2);

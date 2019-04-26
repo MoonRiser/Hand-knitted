@@ -14,10 +14,9 @@ public class Post extends BmobObject {
     private String title;//帖子的标题
     private BmobFile image;//帖子的配图
     private String content;//帖子的内容
-    private BmobRelation likes;//点赞喜欢
+  //  private BmobRelation likes;//点赞喜欢
     private User author;//帖子的作者
     private String date;//发帖日期，这里选用字符串类型，省事
-
 
     public Boolean getSnap() {
         return isSnap;
@@ -73,14 +72,6 @@ public class Post extends BmobObject {
 
     public void setContent(String content) {
         this.content = content;
-    }
-
-    public BmobRelation getLikes() {
-        return likes;
-    }
-
-    public void setLikes(BmobRelation likes) {
-        this.likes = likes;
     }
 
     public User getAuthor() {

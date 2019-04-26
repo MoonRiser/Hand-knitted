@@ -42,6 +42,7 @@ import butterknife.BindView;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
 public class EditPostActivity extends BaseActivity implements View.OnClickListener , IHKView {
@@ -69,6 +70,7 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
     private IHKPresenter presenter= new HKPresenter(this);
     private Boolean isADD;
     private String picPath;
+    private Post myPost;
 
 
     @Override
@@ -88,8 +90,8 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
         isADD = intent.getBooleanExtra("isADD",false);
 
         if(!isADD){
-            Post post = (Post) intent.getSerializableExtra("post");
-            setCurrentConfig(post);}
+            myPost = (Post) intent.getSerializableExtra("post");
+            setCurrentConfig(myPost);}
 
 
     }
@@ -170,14 +172,12 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
 
     private void setCurrentConfig(Post post){
 
-        int[] tool = {R.id.RBtool1,R.id.RBtool2,R.id.RBtool3};
-        int[] group = {R.id.RBgroup1,R.id.RBgroup2,R.id.RBgroup3,R.id.RBgroup4,R.id.RBgroup5};
-        int[] style = {R.id.RBstyle1,R.id.RBstyle2,R.id.RBstyle3,R.id.RBstyle4,R.id.RBstyle5};
+
         ETtitle.setText(post.getTitle());
         ETcontent.setText(post.getContent());
-        RGgroup.check(group[Integer.parseInt(post.getGroup())]);
-        RGtool.check(tool[Integer.parseInt(post.getTool())]);
-        RGstyle.check(style[Integer.parseInt(post.getStyle())]);
+        RGgroup.check(MyUtils.groupid[Integer.parseInt(post.getGroup())-1]);
+        RGtool.check(MyUtils.toolid[Integer.parseInt(post.getTool())-1]);
+        RGstyle.check(MyUtils.styleid[Integer.parseInt(post.getStyle())-1]);
         Glide.with(this).load(post.getImage().getFileUrl()).into(img);
 
 
@@ -220,6 +220,14 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
         post.setTool(tool);
         post.setStyle(style);
         post.setSnap(false);
+        post.setDate(MyUtils.getCurrentDate());
+        if((!isADD)&&(picPath==null)){
+            post.setObjectId(myPost.getObjectId());
+            presenter.updatePost(post);
+            return;
+        }
+
+
         BmobFile img=new BmobFile(new File(picPath));
         img.upload(new UploadFileListener() {
             @Override
@@ -229,6 +237,7 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
                     if(isADD){
                         presenter.addPost(post);
                     }else {
+                        post.setObjectId(myPost.getObjectId());
                         presenter.updatePost(post);
                     }
 
@@ -258,8 +267,12 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
             return true;
         }
         if(picPath==null){
-            showToast("请先选择图片，再点击上传");
-            return true;
+
+            if(isADD){
+                showToast("请先选择图片，再点击上传");
+                return true;
+            }
+
         }
         return false;
     }

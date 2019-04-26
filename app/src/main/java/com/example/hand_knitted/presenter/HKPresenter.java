@@ -67,6 +67,13 @@ public class HKPresenter implements IHKPresenter {
         model.updatePost(post);
     }
 
+
+    @Override
+    public List<String> inqueryLikePost() {
+      return   model.inqueryLikePost();
+    }
+
+
     @Override
     public void inquerySuccess(List<Post> posts) {
         view.showProgress(false);
