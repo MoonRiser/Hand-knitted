@@ -33,7 +33,7 @@ import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
-public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  {
+public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     private List<Work> workList;
@@ -96,8 +96,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_work, parent, false);
         final ViewHolder holder = new ViewHolder(view);
-         //currentWork = workList.get(holder.getLayoutPosition());
-
+        //currentWork = workList.get(holder.getLayoutPosition());
 
 
         return holder;
@@ -110,7 +109,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
 
 
         Work work = workList.get(position);
-        currentWork= work;
+        currentWork = work;
         ViewHolder viewHolder = (ViewHolder) holder;
         //viewHolder.likes.setOnCheckedChangeListener(this);
         String name = work.getPost().getAuthor().getUsername();
@@ -121,6 +120,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
         viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle()) - 1]);
         Glide.with(context).load(work.getPost().getImage().getFileUrl()).into(viewHolder.img);
         viewHolder.comment.setText(commentHelper(work));
+
+        //如果当前帖子已经被收藏，则显示出来
+        if (ids.size() != 0) {
+
+
+            //    Log.i("当前position为：",position+"/对应的postID为："+currentWork.getPost().getObjectId());
+            //  Log.i("ids的size是多少呢？","是："+ids.size());
+            //    Log.i("Like表返回的postid打印", id + "/当前的id：" + currentWork.getPost().getObjectId());
+            if (ids.contains(currentWork.getPost().getObjectId())) {
+                isClicked = false;
+                Log.i("按道理收藏的按钮次时被点亮一次","当前的位置："+position);
+                //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
+                viewHolder.likes.setChecked(true);
+            }else {
+                isClicked=false;
+                viewHolder.likes.setChecked(false);
+            }
+
+
+        }
+
+
         viewHolder.img.setOnClickListener(v -> jumpAnotherActivity(WorkDetailActivity.class));
         viewHolder.commentBT.setOnClickListener(v -> {
 
@@ -130,7 +151,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
             if (isClicked) {
                 if (isChecked) {
                     presenter.setFavoritePost(currentWork.getPost());
-                    Log.i("点击收藏","已经被回调");
+                    Log.i("点击收藏", "已经被回调");
                 } else {
                     presenter.cancelFavoritePost(currentWork.getPost());
                     Log.i("点击取消", "已经被回调");
@@ -140,25 +161,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
             }
         });
 
-        //如果当前帖子已经被收藏，则显示出来
-        if (ids.size() != 0) {
-
-
-        //    Log.i("当前position为：",position+"/对应的postID为："+currentWork.getPost().getObjectId());
-          //  Log.i("ids的size是多少呢？","是："+ids.size());
-                //    Log.i("Like表返回的postid打印", id + "/当前的id：" + currentWork.getPost().getObjectId());
-                if (ids.contains(currentWork.getPost().getObjectId())) {
-                    isClicked = false;
-                 //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
-                    viewHolder.likes.setChecked(true);
-                }else {
-                    isClicked=false;
-                    viewHolder.likes.setChecked(false);
-                }
-
-
-        }
-
 
     }
 
@@ -166,8 +168,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>  
     public int getItemCount() {
         return workList.size();
     }
-
-
 
 
     private void jumpAnotherActivity(Class cls) {

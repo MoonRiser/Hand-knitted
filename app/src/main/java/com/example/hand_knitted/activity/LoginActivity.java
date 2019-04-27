@@ -155,24 +155,18 @@ public class LoginActivity extends BaseActivity {
 
 
         //注册点击事件使用对话框进行注册
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        register.setOnClickListener(v -> {
 
-                removeParentsView(dialogRegister);
+            removeParentsView(dialogRegister);
 
-                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-                alertDialog.setTitle("用户注册");
-                alertDialog.setView(dialogRegister);
-                alertDialog.setPositiveButton("注册", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        registerBmob();//在后台注册账户信息
+            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
+            alertDialog.setTitle("用户注册");
+            alertDialog.setView(dialogRegister);
+            alertDialog.setPositiveButton("注册", (dialog, which) -> {
+                registerBmob();//在后台注册账户信息
 
-                    }
-                });
-                alertDialog.show();
-            }
+            });
+            alertDialog.show();
         });
     }
 
