@@ -1,5 +1,6 @@
 package com.example.hand_knitted.model;
 
+import com.example.hand_knitted.bean.Comment;
 import com.example.hand_knitted.bean.Post;
 
 import java.util.List;
@@ -13,8 +14,8 @@ public interface IHKModel {
     void addPost(Post post);
     void inqueryPost();
     void updatePost(Post post);
+    void addComment(Comment comment);
     List<String> inqueryLikePost();
-
 
 }
 

@@ -1,7 +1,6 @@
 package com.example.hand_knitted.bean;
 
 import cn.bmob.v3.BmobObject;
-import cn.bmob.v3.datatype.BmobPointer;
 
 public class Like extends BmobObject {
 

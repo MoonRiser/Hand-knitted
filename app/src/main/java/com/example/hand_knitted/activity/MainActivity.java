@@ -4,6 +4,7 @@ import android.animation.ArgbEvaluator;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,7 @@ public class MainActivity extends BaseActivity {
 
     private Fragment f1;
     private Fragment f2;
+    private Boolean isDarkMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,18 @@ public class MainActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_for_ma, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.darkMode:
+                break;
+            case R.id.setting:
+                break;
+        }
         return true;
     }
 
@@ -110,6 +124,11 @@ public class MainActivity extends BaseActivity {
         pager.setAdapter(fragmentAdapter);//给ViewPager设置适配器
         tabs.setupWithViewPager(pager);//将TabLayout和ViewPager关联起来。
         //tabLayout.setTabsFromPagerAdapter(fragmentAdapter);//给Tabs设置适配器
+
+    }
+
+
+    private  void darkModeSwith(){
 
     }
 

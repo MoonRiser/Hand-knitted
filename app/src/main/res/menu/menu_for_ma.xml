@@ -9,6 +9,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/darkMode"
+        android:title="暗色切换"
+        app:showAsAction="never"/>
+
+
+    <item
         android:id="@+id/about"
         app:showAsAction="never"
         android:title="about">

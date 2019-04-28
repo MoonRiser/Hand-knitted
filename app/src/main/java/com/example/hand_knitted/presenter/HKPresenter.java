@@ -1,6 +1,7 @@
 package com.example.hand_knitted.presenter;
 
 
+import com.example.hand_knitted.bean.Comment;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.model.HKModel;
@@ -71,6 +72,12 @@ public class HKPresenter implements IHKPresenter {
     @Override
     public List<String> inqueryLikePost() {
       return   model.inqueryLikePost();
+    }
+
+
+    @Override
+    public void addComment(Comment comment) {
+        model.addComment(comment);
     }
 
 

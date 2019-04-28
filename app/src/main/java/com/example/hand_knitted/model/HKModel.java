@@ -139,6 +139,25 @@ public class HKModel implements IHKModel {
         });
     }
 
+
+    @Override
+    public void addComment(Comment comment) {
+
+        comment.save(new SaveListener<String>() {
+            @Override
+            public void done(String s, BmobException e) {
+                if(e==null){
+                   // comment.setObjectId(s);
+                    presenter.updateResult("发表评论成功");
+                }else{
+                    presenter.updateResult("发表评论失败");
+                    Log.i("评论失败的原因是：",e.getErrorCode()+e.getMessage());
+                }
+            }
+        });
+    }
+
+
     @Override
     public void inqueryPost() {
         BmobQuery<Post> query = new BmobQuery<>();
@@ -265,17 +284,20 @@ public class HKModel implements IHKModel {
 
     }
 
+
+
     //将Post和comment构造成Work类型
     private void prepareData(List<Post> posts) {
 
-        BmobQuery<Comment> queryComment = new BmobQuery<>();
+
         List<Work> works = new ArrayList<>();
         for (int i = 0; i < posts.size(); i++) {
+            BmobQuery<Comment> queryComment = new BmobQuery<>();
             Post post = posts.get(i);
             queryComment.addWhereEqualTo("post", post);
             queryComment.setLimit(500);
             queryComment.include("author");
-            queryComment.order("createdAt"); //排序
+            queryComment.order("createdAt"); //排序912e46c1a4
             queryComment.findObjects(new FindListener<Comment>() {
                 @Override
                 public void done(List<Comment> list, BmobException e) {
@@ -285,6 +307,7 @@ public class HKModel implements IHKModel {
                             presenter.requestSuccess(works);
                     } else {
                         presenter.requestFail("bmob评论部分失败：" + e.getMessage() + "," + e.getErrorCode());
+                        Log.i("bmob评论部分失败：",e.getMessage() + "," + e.getErrorCode());
                     }
                 }
             });

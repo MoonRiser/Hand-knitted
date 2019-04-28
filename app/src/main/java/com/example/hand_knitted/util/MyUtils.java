@@ -1,5 +1,8 @@
 package com.example.hand_knitted.util;
 
+import android.view.View;
+import android.view.ViewGroup;
+
 import com.example.hand_knitted.R;
 
 import java.text.SimpleDateFormat;
@@ -24,5 +27,13 @@ public class MyUtils {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd.HH:mm:ss");// HH:mm:ss
         //   Log.w("date到底有没有被规格化？", str);
         return simpleDateFormat.format(date);
+    }
+
+
+    //去除视图的所有父视图
+    public static void removeParentsView(View view) {
+        if (view.getParent() != null) {
+            ((ViewGroup) view.getParent()).removeAllViews();
+        }
     }
 }

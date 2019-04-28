@@ -7,10 +7,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
@@ -18,19 +23,12 @@ import com.example.hand_knitted.activity.WorkDetailActivity;
 import com.example.hand_knitted.bean.Comment;
 import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
-import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.util.MyUtils;
-import com.example.hand_knitted.view.IHKView;
 
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobPointer;
-import cn.bmob.v3.datatype.BmobRelation;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,6 +40,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Work currentWork;
     private List<String> ids;
     private Boolean isClicked = true;
+    private AlertDialog.Builder builder;
+    private AlertDialog dialog;
+    private ListView listView;
+    private Button submit;
+    private View dialogComment;
+    private EditText etComment;
 
 
     public FeedAdapter(IHKPresenter presenter) {
@@ -95,8 +99,20 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_work, parent, false);
+        if (dialogComment == null) {
+            dialogComment = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null, false);
+            listView = dialogComment.findViewById(R.id.LV);
+            submit = dialogComment.findViewById(R.id.BTsubmit);
+            etComment = dialogComment.findViewById(R.id.ETcomment);
+            builder = new AlertDialog.Builder(context);
+            builder.setTitle("当前评论");
+            builder.setView(dialogComment);
+            builder.setCancelable(true);
+
+
+        }
+
         final ViewHolder holder = new ViewHolder(view);
-        //currentWork = workList.get(holder.getLayoutPosition());
 
 
         return holder;
@@ -110,6 +126,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         Work work = workList.get(position);
         currentWork = work;
+        List<Comment> comments = work.getComments();
         ViewHolder viewHolder = (ViewHolder) holder;
         //viewHolder.likes.setOnCheckedChangeListener(this);
         String name = work.getPost().getAuthor().getUsername();
@@ -119,32 +136,36 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup()) - 1]);
         viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle()) - 1]);
         Glide.with(context).load(work.getPost().getImage().getFileUrl()).into(viewHolder.img);
-        viewHolder.comment.setText(commentHelper(work));
+        viewHolder.comment.setText(commentHelper(comments));
+
 
         //如果当前帖子已经被收藏，则显示出来
         if (ids.size() != 0) {
 
 
-            //    Log.i("当前position为：",position+"/对应的postID为："+currentWork.getPost().getObjectId());
-            //  Log.i("ids的size是多少呢？","是："+ids.size());
-            //    Log.i("Like表返回的postid打印", id + "/当前的id：" + currentWork.getPost().getObjectId());
             if (ids.contains(currentWork.getPost().getObjectId())) {
                 isClicked = false;
-                Log.i("按道理收藏的按钮次时被点亮一次","当前的位置："+position);
+                Log.i("按道理收藏的按钮次时被点亮一次", "当前的位置：" + position);
                 //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
                 viewHolder.likes.setChecked(true);
-            }else {
-                isClicked=false;
+            } else {
+                isClicked = false;
                 viewHolder.likes.setChecked(false);
             }
 
 
         }
 
-
+        commentCommitHelper(comments, work);
         viewHolder.img.setOnClickListener(v -> jumpAnotherActivity(WorkDetailActivity.class));
         viewHolder.commentBT.setOnClickListener(v -> {
 
+            if (dialog == null) {
+                dialog = builder.show();
+
+            } else {
+                dialog.show();
+            }
         });
         viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -177,17 +198,38 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private String commentHelper(Work work) {
+    private String commentHelper(List<Comment> comments) {
 
-        StringBuilder str = new StringBuilder("\n");
+        StringBuilder str = new StringBuilder();
         String item;
-        List<Comment> comments = work.getComments();
 
         for (Comment comment : comments) {
             item = comment.getAuthor().getUsername() + ": " + comment.getContent() + "\n";
             str.append(item);
         }
         return str.toString();
+
+    }
+
+
+    private void commentCommitHelper(List<Comment> comments, Work work) {
+        CommentAdapter adapter = new CommentAdapter(context, R.layout.item_comment, comments);
+
+        if (comments.size() > 0) {
+            listView.setAdapter(adapter);
+        }
+        submit.setOnClickListener(v1 -> {
+            Comment comment = new Comment();
+            comment.setAuthor(BmobUser.getCurrentUser(User.class));
+            comment.setContent(etComment.getText().toString());
+            comment.setPost(work.getPost());
+            presenter.addComment(comment);
+            etComment.setText("");
+            listView.setAdapter(adapter);
+            adapter.add(comment);
+            adapter.notifyDataSetChanged();
+        });
+
 
     }
 

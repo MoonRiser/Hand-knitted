@@ -1,4 +1,5 @@
 package com.example.hand_knitted.view;
+
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
 
@@ -9,5 +10,6 @@ public interface IHKView {
     void showPostData(List<Post> posts);
     void showProgress(Boolean show);
     void showResultToast(String info);
+
 
 }

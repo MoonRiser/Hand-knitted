@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.bean.User;
+import com.example.hand_knitted.util.MyUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -55,6 +56,7 @@ public class LoginActivity extends BaseActivity {
     private SharedPreferences sp;
     private SharedPreferences.Editor editor;
     private View dialogRegister;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,14 +112,11 @@ public class LoginActivity extends BaseActivity {
         dialog.setTitle("说明");
         dialog.setCancelable(false);
         dialog.setMessage("完成正常功能需要获取 \n读取电话状态·读存储 权限\n不会用于其他用途，请放心 ( •̀ ω •́ )y");
-        dialog.setPositiveButton("知道了", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ActivityCompat.requestPermissions(LoginActivity.this,
-                        new String[]{Manifest.permission.READ_PHONE_STATE,
-                                Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);//申请权限
-            }
+        dialog.setPositiveButton("知道了", (dialog1, which) -> {
+            dialog1.dismiss();
+            ActivityCompat.requestPermissions(LoginActivity.this,
+                    new String[]{Manifest.permission.READ_PHONE_STATE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);//申请权限
         });
         dialog.show();
 
@@ -142,14 +141,11 @@ public class LoginActivity extends BaseActivity {
     //点击事件
     private void clickEvent() {
         /*登陆按钮监听事件*/
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (isPermissionGranted()) {
-                    loginBmob();
-                } else {
-                    requestPermiassionDialog();
-                }
+        login.setOnClickListener(v -> {
+            if (isPermissionGranted()) {
+                loginBmob();
+            } else {
+                requestPermiassionDialog();
             }
         });
 
@@ -157,16 +153,20 @@ public class LoginActivity extends BaseActivity {
         //注册点击事件使用对话框进行注册
         register.setOnClickListener(v -> {
 
-            removeParentsView(dialogRegister);
+          // MyUtils.removeParentsView(dialogRegister);
+            if(dialog==null){
+                final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
+                alertDialog.setTitle("用户注册");
+                alertDialog.setView(dialogRegister);
+                alertDialog.setPositiveButton("注册", (dialog, which) -> {
+                    registerBmob();//在后台注册账户信息
+                });
+                dialog = alertDialog.show();
+            }else {
+                dialog.show();
+            }
 
-            final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
-            alertDialog.setTitle("用户注册");
-            alertDialog.setView(dialogRegister);
-            alertDialog.setPositiveButton("注册", (dialog, which) -> {
-                registerBmob();//在后台注册账户信息
 
-            });
-            alertDialog.show();
         });
     }
 
@@ -257,11 +257,6 @@ public class LoginActivity extends BaseActivity {
         });
     }
 
-    //去除视图的所有父视图
-    public void removeParentsView(View view) {
-        if (view.getParent() != null) {
-            ((ViewGroup) view.getParent()).removeAllViews();
-        }
-    }
+
 
 }

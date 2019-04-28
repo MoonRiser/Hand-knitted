@@ -19,8 +19,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="wrap_content"
-        android:layout_height="176dp"
+        android:layout_width="352dp"
+        android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="216dp"
         android:layout_marginEnd="32dp"
@@ -32,59 +32,54 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="48dp">
+            android:orientation="vertical"
+            android:layout_margin="16dp">
 
 
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="用户名" />
+                android:layout_marginHorizontal="8dp"
+                app:counterEnabled="true"
+                app:errorEnabled="true"
+                app:counterMaxLength="8">
+
+                <EditText
+                    android:id="@+id/ETname"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="8"
+                    android:hint="请输入用户名"
+                    android:inputType="textPersonName" />
 
 
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/textView2"
-                android:layout_alignEnd="@id/textView2"
-                android:layout_marginTop="32dp"
-                android:text="密码" />
+                android:layout_marginHorizontal="8dp"
+                app:errorEnabled="true"
+                app:passwordToggleEnabled="true"
+                app:counterEnabled="true"
+                app:counterMaxLength="8">
+
+                <EditText
+                    android:id="@+id/ETpwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="8"
+                    android:hint="请输入密码"
+                    android:inputType="textPassword" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <EditText
-                android:id="@+id/ETname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPersonName"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="-12dp"
-                android:layout_marginBottom="-10dp"
-                android:layout_toEndOf="@+id/textView2"
-                android:layout_toRightOf="@id/textView2"
-                android:ems="10"
-                android:hint="请输入用户名" />
-
-
-            <EditText
-                android:id="@+id/ETpwd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:layout_alignStart="@id/ETname"
-                android:layout_alignTop="@+id/textView3"
-                android:layout_alignBottom="@+id/textView3"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="-12dp"
-                android:layout_marginBottom="-10dp"
-                android:ems="10"
-                android:hint="请输入密码" />
-
-
-        </RelativeLayout>
+        </LinearLayout>
     </androidx.cardview.widget.CardView>
 
     <androidx.constraintlayout.widget.Guideline
