@@ -2,6 +2,10 @@ package com.example.hand_knitted.util;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
+import androidx.appcompat.app.AppCompatDelegate;
 
 import com.lzy.imagepicker.ImagePicker;
 import com.lzy.imagepicker.view.CropImageView;
@@ -10,17 +14,27 @@ import cn.bmob.v3.Bmob;
 
 public class MyApplication extends Application {
 
+    private SharedPreferences sp;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Bmob.initialize(this, "5bb030d2c8976622d951f1fb49e61ffc");
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
         initImagePicker();
+        initDarkMode();
     }
 
 
 
 
+
+    private void initDarkMode(){
+        boolean isNightMode= sp.getBoolean("pref_theme_dark",false);
+        if(isNightMode){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
+    }
 
 
     private void initImagePicker() {

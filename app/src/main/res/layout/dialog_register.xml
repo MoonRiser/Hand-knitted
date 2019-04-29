@@ -2,32 +2,54 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="16dp"
     android:orientation="vertical">
 
 
-    <EditText
-        android:id="@+id/nameStr"
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="4dp"
-        android:hint="username"
-        android:inputType="textPersonName" />
+        app:counterEnabled="true"
+        app:counterMaxLength="8">
 
-    <EditText
-        android:id="@+id/pwdStr"
+        <EditText
+            android:id="@+id/nameStr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="4dp"
+            android:maxLength="8"
+            android:hint="username"
+            android:inputType="textPersonName" />
+
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="16dp"
-        android:fontFamily="sans-serif"
-        android:hint="password"
-        android:inputType="textPassword" />
+        app:counterMaxLength="8"
+        app:counterEnabled="true">
+
+        <EditText
+            android:id="@+id/pwdStr"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif"
+            android:hint="password"
+            android:inputType="textPassword" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
 
     <RadioGroup
         android:id="@+id/radioGroup"

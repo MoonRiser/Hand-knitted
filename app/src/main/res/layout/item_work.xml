@@ -19,9 +19,9 @@
                 android:id="@+id/IMGavatar"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 app:aiv_CornerRadius="24dp"
                 app:aiv_ShowBoarder="false"
@@ -41,14 +41,7 @@
                 android:textStyle="bold" />
 
 
-            <TextView
-                android:id="@+id/TVtool"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@id/IMGavatar"
-                android:layout_toEndOf="@id/IMGavatar"
-                android:text="钩织结合"
-                android:textSize="10sp" />
+
 
             <TextView
                 android:id="@+id/TVgroup"
@@ -56,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBottom="@id/IMGavatar"
                 android:layout_marginStart="4dp"
-                android:layout_toEndOf="@id/TVtool"
+                android:layout_toEndOf="@id/IMGavatar"
                 android:text="婴幼儿"
                 android:textSize="10sp" />
 
@@ -70,6 +63,15 @@
                 android:text="叶子花"
                 android:textSize="10sp" />
 
+
+            <TextView
+                android:id="@+id/TVtool"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/IMGavatar"
+                android:layout_toEndOf="@id/TVstyle"
+                android:text="钩织结合"
+                android:textSize="10sp" />
 
         </RelativeLayout>
 

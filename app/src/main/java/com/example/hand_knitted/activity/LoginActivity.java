@@ -153,7 +153,6 @@ public class LoginActivity extends BaseActivity {
         //注册点击事件使用对话框进行注册
         register.setOnClickListener(v -> {
 
-          // MyUtils.removeParentsView(dialogRegister);
             if(dialog==null){
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
                 alertDialog.setTitle("用户注册");

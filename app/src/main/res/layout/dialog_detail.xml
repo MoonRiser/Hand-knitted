@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <cn.carbs.android.avatarimageview.library.AvatarImageView
+            android:id="@+id/IMGavatar0"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            app:aiv_CornerRadius="24dp"
+            app:aiv_ShowBoarder="false"
+            app:aiv_TextSizeRatio="0.5" />
+
+        <TextView
+            android:id="@+id/TVtitle0"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/IMGavatar0"
+            android:layout_toEndOf="@id/IMGavatar0"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:text="关于钩织的一点心得体会"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:id="@+id/date0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/IMGavatar0"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="16dp"
+            android:paddingEnd="4dp"
+            android:text="2019/4/29 17:18"
+            android:textSize="12sp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:id="@+id/name0"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="王境泽"
+            android:layout_alignTop="@id/TVtitle0"
+            android:layout_alignEnd="@id/date0"/>
+
+        <TextView
+            android:id="@+id/TVtool0"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_alignBottom="@id/IMGavatar0"
+            android:layout_toEndOf="@id/TVstyle0"
+            android:text="钩织结合"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/TVgroup0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/IMGavatar0"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/IMGavatar0"
+            android:text="婴幼儿"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/TVstyle0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/IMGavatar0"
+            android:layout_marginStart="4dp"
+            android:layout_toEndOf="@id/TVgroup0"
+            android:text="叶子花"
+            android:textSize="12sp" />
+
+
+    </RelativeLayout>
+
+
+    <ImageView
+        android:id="@+id/IMGwork0"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginHorizontal="16dp"
+        android:scaleType="centerCrop"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/TVcontent0"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:text="someone call the doctor "
+        android:textStyle="bold" />
+
+</LinearLayout>

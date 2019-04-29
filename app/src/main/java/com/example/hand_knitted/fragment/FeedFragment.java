@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
+import com.example.hand_knitted.activity.MainActivity;
 import com.example.hand_knitted.adapter.FeedAdapter;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.User;
@@ -19,6 +20,7 @@ import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.view.IHKView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +30,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,11 +44,12 @@ public class FeedFragment extends Fragment implements IHKView {
 
     @BindView(R.id.feed)
     public RecyclerView recyclerView;
+    @BindView(R.id.swipe)
+    public SwipeRefreshLayout refreshLayout;
 
 
     private IHKPresenter hkPresenter;
     private Unbinder unbinder;
-    private ProgressBar progressBar;
     private View view;
     private FeedAdapter feedAdapter;
 
@@ -81,9 +85,8 @@ public class FeedFragment extends Fragment implements IHKView {
         refreshData();
     }
 
-
-    public IHKPresenter getHkPresenter() {
-        return hkPresenter;
+    public FeedFragment() {
+        hkPresenter = new HKPresenter(this);
     }
 
     @Override
@@ -91,6 +94,7 @@ public class FeedFragment extends Fragment implements IHKView {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_feed, container, false);
         //返回一个Unbinder值（进行解绑），注意这里的this不能使用getActivity()
+
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -100,12 +104,16 @@ public class FeedFragment extends Fragment implements IHKView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        progressBar = view.findViewById(R.id.PB);
-
-        hkPresenter = new HKPresenter(this);
+      //  progressBar = view.findViewById(R.id.PB);
         feedAdapter = new FeedAdapter(hkPresenter);
         feedAdapter.setIds(hkPresenter.inqueryLikePost());
         hkPresenter.request("0.0.0", false);//表示全选
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshData();
+            }
+        });
 
 
 
@@ -114,6 +122,8 @@ public class FeedFragment extends Fragment implements IHKView {
 
 
     }
+
+
 
     /**
      * onDestroyView中进行解绑操作
@@ -146,12 +156,7 @@ public class FeedFragment extends Fragment implements IHKView {
 
     @Override
     public void showProgress(Boolean show) {
-
-        if (show) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
+        refreshLayout.setRefreshing(show);
     }
 
 

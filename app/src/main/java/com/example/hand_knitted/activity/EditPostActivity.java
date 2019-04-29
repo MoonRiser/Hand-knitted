@@ -45,6 +45,8 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
+import static com.example.hand_knitted.util.MyUtils.IMAGE_PICKER;
+
 public class EditPostActivity extends BaseActivity implements View.OnClickListener , IHKView {
 
     @BindView(R.id.TB2)
@@ -66,7 +68,7 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
     @BindView(R.id.ETcontent)
     public EditText ETcontent;
 
-    public static final int IMAGE_PICKER = 0;
+
     private IHKPresenter presenter= new HKPresenter(this);
     private Boolean isADD;
     private String picPath;
@@ -149,6 +151,9 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
     @Override
     public void showResultToast(String info) {
         showToastLong(info);
+        if("发帖成功".equals(info)){
+            finish();
+        }
     }
 
     @Override

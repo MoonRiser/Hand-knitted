@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.activity.WorkDetailActivity;
 import com.example.hand_knitted.bean.Comment;
+import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.User;
 import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.IHKPresenter;
@@ -29,6 +30,7 @@ import com.example.hand_knitted.util.MyUtils;
 import java.util.List;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
 public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -42,9 +44,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Boolean isClicked = true;
     private AlertDialog.Builder builder;
     private AlertDialog dialog;
+    private AlertDialog.Builder builder0;
+    private AlertDialog dialog0;
+    private ViewHolderForDetail viewHolderForDetail;
     private ListView listView;
     private Button submit;
     private View dialogComment;
+    private View dialogDetail;
     private EditText etComment;
 
 
@@ -88,6 +94,32 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    class ViewHolderForDetail {
+        AvatarImageView avatar;
+        TextView title;
+        TextView tool;
+        TextView group;
+        TextView style;
+        TextView date;
+        ImageView img;
+        TextView content;
+        TextView name;
+
+        ViewHolderForDetail(View view) {
+            avatar = view.findViewById(R.id.IMGavatar0);
+            title = view.findViewById(R.id.TVtitle0);
+            tool = view.findViewById(R.id.TVtool0);
+            group = view.findViewById(R.id.TVgroup0);
+            style = view.findViewById(R.id.TVstyle0);
+            date = view.findViewById(R.id.date0);
+            img = view.findViewById(R.id.IMGwork0);
+            content = view.findViewById(R.id.TVcontent0);
+            name = view.findViewById(R.id.name0);
+        }
+
+
+    }
+
 
     @NonNull
     @Override
@@ -99,6 +131,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_work, parent, false);
+
         if (dialogComment == null) {
             dialogComment = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null, false);
             listView = dialogComment.findViewById(R.id.LV);
@@ -111,11 +144,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         }
+        if (dialogDetail == null) {
+            dialogDetail = LayoutInflater.from(context).inflate(R.layout.dialog_detail, parent, false);
+            viewHolderForDetail = new ViewHolderForDetail(dialogDetail);
+            builder0 = new AlertDialog.Builder(context);
+            builder0.setTitle("当前帖子");
+            builder0.setView(dialogDetail);
+            builder0.setCancelable(true);
+        }
 
-        final ViewHolder holder = new ViewHolder(view);
-
-
-        return holder;
+        return new ViewHolder(view);
 
 
     }
@@ -135,7 +173,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         viewHolder.tool.setText(MyUtils.tool[Integer.parseInt(work.getPost().getTool()) - 1]);
         viewHolder.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup()) - 1]);
         viewHolder.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle()) - 1]);
-        Glide.with(context).load(work.getPost().getImage().getFileUrl()).into(viewHolder.img);
+        BmobFile bmobFile = work.getPost().getImage();
+        if(bmobFile.getLocalFile()==null){
+            Glide.with(context).load(bmobFile.getFileUrl()).into(viewHolder.img);
+        }else{
+            Glide.with(context).load(bmobFile.getLocalFile()).into(viewHolder.img);
+        }
+
         viewHolder.comment.setText(commentHelper(comments));
 
 
@@ -145,7 +189,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             if (ids.contains(currentWork.getPost().getObjectId())) {
                 isClicked = false;
-                Log.i("按道理收藏的按钮次时被点亮一次", "当前的位置：" + position);
+                // Log.i("按道理收藏的按钮次时被点亮一次", "当前的位置：" + position);
                 //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
                 viewHolder.likes.setChecked(true);
             } else {
@@ -156,10 +200,17 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         }
 
-        commentCommitHelper(comments, work);
-        viewHolder.img.setOnClickListener(v -> jumpAnotherActivity(WorkDetailActivity.class));
+        viewHolder.img.setOnClickListener(v -> {
+                    detailDisplayHelper(work);
+                    if (dialog0 == null) {
+                        dialog0 = builder0.show();
+                    } else {
+                        dialog0.show();
+                    }
+                });
         viewHolder.commentBT.setOnClickListener(v -> {
 
+            commentCommitHelper(comments, work,position);
             if (dialog == null) {
                 dialog = builder.show();
 
@@ -191,13 +242,6 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private void jumpAnotherActivity(Class cls) {
-        Intent intent = new Intent(context, cls);
-        context.startActivity(intent);
-
-    }
-
-
     private String commentHelper(List<Comment> comments) {
 
         StringBuilder str = new StringBuilder();
@@ -212,12 +256,28 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private void commentCommitHelper(List<Comment> comments, Work work) {
-        CommentAdapter adapter = new CommentAdapter(context, R.layout.item_comment, comments);
+    private void detailDisplayHelper(Work work) {
+        Post post = work.getPost();
+        String name = post.getAuthor().getUsername();
+        viewHolderForDetail.avatar.setTextAndColorSeed(name.substring(0, 1), name);
+        viewHolderForDetail.content.setText(post.getContent());
+        Glide.with(context).load(post.getImage().getFileUrl()).into(viewHolderForDetail.img);
+        viewHolderForDetail.date.setText(post.getUpdatedAt());
+        viewHolderForDetail.title.setText(post.getTitle());
+        viewHolderForDetail.tool.setText(MyUtils.tool[Integer.parseInt(work.getPost().getTool()) - 1]);
+        viewHolderForDetail.group.setText(MyUtils.group[Integer.parseInt(work.getPost().getGroup()) - 1]);
+        viewHolderForDetail.style.setText(MyUtils.style[Integer.parseInt(work.getPost().getStyle()) - 1]);
+        viewHolderForDetail.name.setText(post.getAuthor().getUsername());
 
-        if (comments.size() > 0) {
-            listView.setAdapter(adapter);
-        }
+
+    }
+
+    private void commentCommitHelper(List<Comment> comments, Work work,int position) {
+
+        CommentAdapter adapter = new CommentAdapter(context, R.layout.item_comment, comments);
+        //  if (comments.size() > 0) {
+        listView.setAdapter(adapter);
+        //  }
         submit.setOnClickListener(v1 -> {
             Comment comment = new Comment();
             comment.setAuthor(BmobUser.getCurrentUser(User.class));
@@ -225,9 +285,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             comment.setPost(work.getPost());
             presenter.addComment(comment);
             etComment.setText("");
-            listView.setAdapter(adapter);
-            adapter.add(comment);
+            // listView.setAdapter(adapter);
+            comments.add(comment);
+       //     adapter.add(comment);
             adapter.notifyDataSetChanged();
+            notifyItemChanged(position);
         });
 
 

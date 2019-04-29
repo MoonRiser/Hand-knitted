@@ -15,8 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:text="王境泽"
-            android:textStyle="bold" />
+            android:text="王境泽" />
 
         <TextView
             android:id="@+id/TVcommentdate"
@@ -33,5 +32,6 @@
         android:id="@+id/TVcommentdetail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="夏夜，起砂的水泥砂浆裂缝里长出了青苔，还有腐叶的味道" />
+        android:text="夏夜，起砂的水泥砂浆裂缝里长出了青苔，还有腐叶的味道"
+        android:textStyle="bold" />
 </LinearLayout>

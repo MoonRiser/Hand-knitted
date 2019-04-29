@@ -1,11 +1,17 @@
 package com.example.hand_knitted.activity;
 
 import android.animation.ArgbEvaluator;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -15,6 +21,8 @@ import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.TabFragmentAdapter;
 import com.example.hand_knitted.fragment.FeedFragment;
 import com.example.hand_knitted.fragment.MyWorkFragment;
+import com.example.hand_knitted.util.MyUtils;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
@@ -22,7 +30,7 @@ import java.util.List;
 
 import butterknife.BindView;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     @BindView(R.id.TB2)
@@ -31,16 +39,21 @@ public class MainActivity extends BaseActivity {
     public ViewPager pager;
     @BindView(R.id.tab)
     public TabLayout tabs;
+    @BindView(R.id.FABadd)
+    public FloatingActionButton fab;
 
     private Fragment f1;
     private Fragment f2;
     private Boolean isDarkMode = false;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        sp = PreferenceManager.getDefaultSharedPreferences(this);
+        isDarkMode = sp.getBoolean("pref_theme_dark", false);
+        fabSiwth(false);
         init();
     }
 
@@ -54,8 +67,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.darkMode:
+                darkModeSwith();
                 break;
             case R.id.setting:
                 break;
@@ -64,18 +78,26 @@ public class MainActivity extends BaseActivity {
     }
 
 
+
     @Override
-    protected void onRestart() {
-        super.onRestart();
-        ((FeedFragment) f1).refreshData();
-        ((MyWorkFragment)f2).getPresenter().inqueryPost();
-       // Log.i("Activity的重新打开被回调", "yes");
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==MyUtils.POST_EDIT){
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            ((FeedFragment) f1).refreshData();
+            ((MyWorkFragment) f2).getPresenter().inqueryPost();
+        }
     }
 
     private void init() {
 
         setSupportActionBar(toolbar);
         initTabViewPager();
+        fab.setOnClickListener(this);
     }
 
 
@@ -103,6 +125,15 @@ public class MainActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
+                //  Log.i("当前显示的碎片的位置：",position+"");
+                switch (position) {
+                    case 0:
+                        fabSiwth(false);
+                        break;
+                    case 1:
+                        fabSiwth(true);
+                        break;
+                }
             }
 
             @Override
@@ -114,8 +145,8 @@ public class MainActivity extends BaseActivity {
         //  tabLayout.setTabMode(TabLayout.MODE_SCROLLABLE);
         List<Fragment> fragmentList = new ArrayList<>();
         FragmentManager fragmentManager = getSupportFragmentManager();
-         f1 = new FeedFragment();
-         f2 = new MyWorkFragment();
+        f1 = new FeedFragment();
+        f2 = new MyWorkFragment();
 
         fragmentList.add(f1);
         fragmentList.add(f2);
@@ -128,8 +159,45 @@ public class MainActivity extends BaseActivity {
     }
 
 
-    private  void darkModeSwith(){
+    private void darkModeSwith() {
+
+        SharedPreferences.Editor editor = sp.edit();
+        if (!isDarkMode) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            editor.putBoolean("pref_theme_dark", true);
+
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            editor.putBoolean("pref_theme_dark", false);
+        }
+        editor.apply();
+        finish();
+        startActivity(new Intent(this, this.getClass()));
+    }
+
+
+    public void fabSiwth(Boolean show) {
+        if (fab == null)
+            return;
+        if (show) {
+            fab.show();
+        } else {
+            fab.hide();
+        }
 
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+
+            case R.id.FABadd:
+                Intent intent = new Intent(this, EditPostActivity.class);
+                intent.putExtra("isADD", true);//发表新帖子和更新旧帖子用同一个EditPostActivity，所以用这个标志区分一下
+                startActivityForResult(intent, MyUtils.POST_EDIT);
+                break;
+        }
+
+    }
 }

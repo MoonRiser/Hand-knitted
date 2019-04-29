@@ -1,6 +1,5 @@
 package com.example.hand_knitted.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
-import com.example.hand_knitted.activity.EditPostActivity;
 import com.example.hand_knitted.adapter.MyWorkAdapter;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.User;
@@ -27,7 +25,6 @@ import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.view.IHKView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -52,8 +49,6 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     @BindView(R.id.IMGsex)
     public ImageView sex;
 
-    @BindView(R.id.FABadd)
-    public FloatingActionButton fab;
 
     private IHKPresenter presenter;
     private ProgressBar progressBar;
@@ -83,7 +78,6 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
         recyclerView.setLayoutManager(new
                 StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
         refresh.setOnClickListener(this);
-        fab.setOnClickListener(this);
 
         User myself = BmobUser.getCurrentUser(User.class);
         me.setText(myself.getUsername());
@@ -128,6 +122,8 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
             iSFirstTime = false;
         }
         myWorkAdapter.notifyDataSetChanged();
+        recyclerView.scrollToPosition(0);
+
 
     }
 
@@ -151,15 +147,8 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.BTrefresh: presenter.inqueryPost();
-                break;
-
-            case R.id.FABadd:
-                Intent intent = new Intent(getActivity(), EditPostActivity.class);
-                intent.putExtra("isADD",true);//发表新帖子和更新旧帖子用同一个EditPostActivity，所以用这个标志区分一下
-                startActivity(intent);
-                break;
+        if (v.getId() == R.id.BTrefresh) {
+            presenter.inqueryPost();
         }
 
     }

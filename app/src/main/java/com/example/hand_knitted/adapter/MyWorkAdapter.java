@@ -14,9 +14,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.activity.EditPostActivity;
+import com.example.hand_knitted.activity.MainActivity;
 import com.example.hand_knitted.activity.WorkDetailActivity;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.Work;
+import com.example.hand_knitted.fragment.MyWorkFragment;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.util.MyUtils;
 import com.google.android.material.snackbar.Snackbar;
@@ -26,6 +28,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import cn.bmob.v3.datatype.BmobFile;
 import cn.carbs.android.avatarimageview.library.AvatarImageView;
 
 import static android.content.Context.VIBRATOR_SERVICE;
@@ -110,7 +114,6 @@ public class MyWorkAdapter extends RecyclerView.Adapter  {
         viewHolder.img.setOnClickListener(v -> {
             switch (v.getId()){
                 case R.id.IMGwork: Intent intent = new Intent(context, EditPostActivity.class);
-                    Log.i("这次被点击的是第几个item呢？：",String.valueOf(position) );
                     intent.putExtra("post",posts.get(position));
                     context.startActivity(intent);
                     break;
@@ -126,7 +129,7 @@ public class MyWorkAdapter extends RecyclerView.Adapter  {
             vibrator.vibrate(VibrationEffect.createOneShot(50,VibrationEffect.DEFAULT_AMPLITUDE));
             Log.i("position被回调：",position+"");
 
-            Snackbar.make(parent, "确定删除当前内容吗?", Snackbar.LENGTH_LONG).setAction("确定", v1 -> {
+            Snackbar.make(((MainActivity)context).fab, "确定删除当前内容吗?", Snackbar.LENGTH_LONG).setAction("确定", v1 -> {
 
                 presenter.deletePost(posts.get(position));
                 posts.remove(position);
@@ -147,7 +150,14 @@ public class MyWorkAdapter extends RecyclerView.Adapter  {
         viewHolder.style.setText(MyUtils.style[Integer.parseInt(post.getStyle())-1]);
         viewHolder.date.setText(str[0]);
         viewHolder.time.setText(str[1]);
-        Glide.with(context).load(post.getImage().getFileUrl()).into(viewHolder.img);
+        BmobFile bmobFile = post.getImage();
+        if(bmobFile.getLocalFile()==null){
+            Glide.with(context).load(bmobFile.getFileUrl()).into(viewHolder.img);
+        }else{
+            Glide.with(context).load(bmobFile.getLocalFile()).into(viewHolder.img);
+        }
+
+
 
 
 
@@ -160,15 +170,6 @@ public class MyWorkAdapter extends RecyclerView.Adapter  {
     }
 
 
-
-
-
-
-    private void jumpAnotherActivity(Class cls){
-        Intent intent = new Intent(context, cls);
-        context.startActivity(intent);
-
-    }
 
 
 

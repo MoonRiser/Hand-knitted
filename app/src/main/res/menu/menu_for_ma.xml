@@ -10,7 +10,7 @@
 
     <item
         android:id="@+id/darkMode"
-        android:title="暗色切换"
+        android:title="暗色模式切换"
         app:showAsAction="never"/>
 
 

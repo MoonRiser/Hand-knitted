@@ -19,4 +19,9 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
 
+    <style name="MainActivityTheme" parent="AppTheme">
+        <item name="android:windowEnterTransition">@transition/slide_in</item>
+        <item name="android:windowExitTransition">@transition/slide_out</item>
+    </style>
+
 </resources>

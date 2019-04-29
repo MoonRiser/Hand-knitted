@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hand_knitted">
+
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -21,7 +23,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        tools:ignore="GoogleAppIndexingWarning">
+
         <activity android:name=".activity.EditPostActivity" />
         <activity android:name=".activity.WorkDetailActivity" />
         <activity android:name=".activity.RookieActivity" />
@@ -40,7 +44,8 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/HideStatusBarTheme" />
-        <activity android:name=".activity.MainActivity" />
+        <activity android:name=".activity.MainActivity"
+            android:theme="@style/MainActivityTheme"/>
     </application>
 
 </manifest>

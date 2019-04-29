@@ -92,19 +92,10 @@ public class HKModel implements IHKModel {
     @Override
     public void deletePost(Post post) {
 
-        post.delete(post.getObjectId(), new UpdateListener() {
-            @Override
-            public void done(BmobException e) {
-                if (e == null) {
-                    presenter.updateResult("云端帖子删除成功");
-                } else {
-                    presenter.updateResult("云端帖子删除失败" + e.getErrorCode() + e.getErrorCode());
-                }
-            }
-        });
+
 
         BmobQuery<Comment> queryComment = new BmobQuery<>();
-        queryComment.addWhereEqualTo("post", post.getAuthor());
+        queryComment.addWhereEqualTo("post", post);
         queryComment.setLimit(500);
         queryComment.include("author");
         queryComment.order("createdAt"); //排序
@@ -116,6 +107,17 @@ public class HKModel implements IHKModel {
                                  }
 
         );
+
+        post.delete(post.getObjectId(), new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    presenter.updateResult("云端帖子删除成功");
+                } else {
+                    presenter.updateResult("云端帖子删除失败" + e.getErrorCode() + e.getErrorCode());
+                }
+            }
+        });
 
 
     }
