@@ -41,15 +41,15 @@ public class MyWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     private List<Post> posts;
     private Context context;
     private IHKPresenter presenter;
-    private Boolean isSnap;
+    private final int TYPE_POST = 0;
+    private final int TYPE_SNAP = 1;
+
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
     }
 
-    public void setSnap(Boolean snap) {
-        isSnap = snap;
-    }
+
 
     public MyWorkAdapter(IHKPresenter presenter) {
         this.presenter = presenter;
@@ -124,15 +124,13 @@ public class MyWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         //final FeedAdapter.ViewHolder holder = new FeedAdapter.ViewHolder(view);
         final MyWorkAdapter.ViewHolder holder = new MyWorkAdapter.ViewHolder(view);
         final MyWorkAdapter.ViewHoldersnap holderSnap = new MyWorkAdapter.ViewHoldersnap(viewsnap);
-        //  position = holder.getAdapterPosition();
-        // holder.img.setOnClickListener(this);
-        //  holder.cardView.setOnLongClickListener(this);
 
-        if(isSnap){
-            return holderSnap;
-        }else{
+        if(viewType==TYPE_POST){
             return holder;
+        }else{
+            return holderSnap;
         }
+
 
     }
 
@@ -146,7 +144,7 @@ public class MyWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         String[] str = dateTime.split("\\.");
 
 
-        if(isSnap){
+        if(holder instanceof ViewHoldersnap){
             MyWorkAdapter.ViewHoldersnap viewHolder = (MyWorkAdapter.ViewHoldersnap) holder;
             viewHolder.cardView.setOnClickListener(v -> {
 
@@ -253,5 +251,14 @@ public class MyWorkAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         return posts.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        Post post = posts.get(position);
+        if(post.getSnap()){
+            return TYPE_SNAP;
+        }else{
+            return TYPE_POST;
+        }
 
+    }
 }

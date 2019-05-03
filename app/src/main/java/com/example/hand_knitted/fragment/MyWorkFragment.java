@@ -57,9 +57,8 @@ public class MyWorkFragment extends Fragment implements IHKView {
     private View view;
     private Unbinder unbinder;
     private MyWorkAdapter myWorkAdapter;
-    private MyWorkAdapter myWorkAdaptersnap;
     private Toast toast;
-    //  private Boolean iSFirstTime = true;
+    private Boolean iSFirstTime = true;
     private Boolean isSnap = false;
 
     public MyWorkFragment() {
@@ -81,9 +80,6 @@ public class MyWorkFragment extends Fragment implements IHKView {
         progressBar = view.findViewById(R.id.PB2);
 
         myWorkAdapter = new MyWorkAdapter(presenter);
-        myWorkAdaptersnap = new MyWorkAdapter(presenter);
-        myWorkAdapter.setSnap(false);
-        myWorkAdaptersnap.setSnap(true);
         presenter.inqueryPost(isSnap);
         recyclerView.setLayoutManager(new
                 LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
@@ -126,19 +122,15 @@ public class MyWorkFragment extends Fragment implements IHKView {
     @Override
     public void showPostData(List<Post> posts) {
 
-        if (isSnap) {
-            Log.i("随拍回调成功，size多少？", posts.size() + "");
-            myWorkAdaptersnap.setPosts(posts);
-            //   recyclerView.swapAdapter(mySnapAdapter,true);
-            recyclerView.setAdapter(myWorkAdaptersnap);
-            myWorkAdaptersnap.notifyDataSetChanged();
-        } else {
-            Log.i("作品回调成功，size多少？", posts.size() + "");
-            myWorkAdapter.setPosts(posts);
-            //     recyclerView.swapAdapter(myWorkAdapter,true);
+
+
+        myWorkAdapter.setPosts(posts);
+        if(iSFirstTime){
             recyclerView.setAdapter(myWorkAdapter);
+        }else{
             myWorkAdapter.notifyDataSetChanged();
         }
+
         recyclerView.scrollToPosition(0);
 
 

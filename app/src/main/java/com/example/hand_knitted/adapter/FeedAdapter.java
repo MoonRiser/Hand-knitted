@@ -1,7 +1,6 @@
 package com.example.hand_knitted.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.hand_knitted.R;
-import com.example.hand_knitted.activity.WorkDetailActivity;
 import com.example.hand_knitted.bean.Comment;
 import com.example.hand_knitted.bean.Post;
 import com.example.hand_knitted.bean.User;
@@ -57,20 +55,23 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private View dialogDetail;
     private View dialogDetails;
     private EditText etComment;
-    private Boolean isSnap = false;
+    private final int TYPE_POST = 0;
+    private final int TYPE_SNAP = 1;
 
 
     public FeedAdapter(IHKPresenter presenter) {
         this.presenter = presenter;
+
     }
 
     public void setWorkList(List<Work> workList) {
+
+        //  this.workList.clear();
+        // this.workList.addAll(workList);
         this.workList = workList;
+
     }
 
-    public void setSnap(Boolean snap) {
-        isSnap = snap;
-    }
 
     public void setIds(List<String> ids) {
         this.ids = ids;
@@ -204,6 +205,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         View view = LayoutInflater.from(context).inflate(R.layout.item_work, parent, false);
         View viewsnap = LayoutInflater.from(context).inflate(R.layout.item_work_snap, parent, false);
+
         if (dialogComment == null) {
             dialogComment = LayoutInflater.from(context).inflate(R.layout.dialog_comment, null, false);
             listView = dialogComment.findViewById(R.id.LV);
@@ -232,10 +234,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             builder0s.setView(dialogDetails);
             builder0s.setCancelable(true);
         }
-        if (isSnap) {
-            return new ViewHolderSnap(viewsnap);
-        } else {
+
+        if(viewType==TYPE_POST){
             return new ViewHolder(view);
+        }else{
+            return new ViewHolderSnap(viewsnap);
         }
 
 
@@ -249,7 +252,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         currentWork = work;
         List<Comment> comments = work.getComments();
 
-        if (isSnap) {
+        if (holder instanceof ViewHolderSnap) {
             ViewHolderSnap viewHolder = (ViewHolderSnap) holder;
             String name = work.getPost().getAuthor().getUsername();
             viewHolder.avatar.setTextAndColorSeed(name.substring(0, 1), name);
@@ -278,7 +281,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             viewHolder.cardView.setOnClickListener(v -> {
-                detailDisplayHelper(work);
+                detailDisplayHelper(work,true);
                 if (dialog0s == null) {
                     dialog0s = builder0s.show();
                 } else {
@@ -316,7 +319,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     } else {
                         dialog0s.show();
                     }
-                    MyUtils.shotShare(context,dialog0s.getWindow().getDecorView());
+                    MyUtils.shotShare(context, dialog0s.getWindow().getDecorView());
                 }
             });
 
@@ -359,7 +362,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             viewHolder.cardView.setOnClickListener(v -> {
-                detailDisplayHelper(work);
+                detailDisplayHelper(work,false);
                 if (dialog0 == null) {
                     dialog0 = builder0.show();
                 } else {
@@ -376,16 +379,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     dialog.show();
                 }
             });
-            viewHolder.share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (dialog0 == null) {
-                        dialog0 = builder0.show();
-                    } else {
-                        dialog0.show();
-                    }
-                    MyUtils.shotShare(context,dialog0.getWindow().getDecorView());
+            viewHolder.share.setOnClickListener(v -> {
+                if (dialog0 == null) {
+                    dialog0 = builder0.show();
+                } else {
+                    dialog0.show();
                 }
+                MyUtils.shotShare(context, dialog0.getWindow().getDecorView());
             });
             viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -412,6 +412,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         return workList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        Work work = workList.get(position);
+        if (work.getPost().getSnap()) {
+            return TYPE_SNAP;
+        } else {
+            return TYPE_POST;
+        }
+        //  return super.getItemViewType(position);
+    }
 
     private String commentHelper(List<Comment> comments) {
 
@@ -427,7 +437,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private void detailDisplayHelper(Work work) {
+    private void detailDisplayHelper(Work work,Boolean isSnap) {
         Post post = work.getPost();
         String name = post.getAuthor().getUsername();
         if (isSnap) {

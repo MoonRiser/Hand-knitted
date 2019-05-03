@@ -5,38 +5,25 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.example.hand_knitted.R;
-import com.example.hand_knitted.activity.MainActivity;
-import com.example.hand_knitted.adapter.FeedAdapter;
-import com.example.hand_knitted.bean.Post;
-import com.example.hand_knitted.bean.User;
-import com.example.hand_knitted.bean.Work;
-import com.example.hand_knitted.presenter.HKPresenter;
-import com.example.hand_knitted.presenter.IHKPresenter;
-import com.example.hand_knitted.view.IHKView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.List;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
+import com.example.hand_knitted.R;
+import com.example.hand_knitted.adapter.FeedAdapter;
+import com.example.hand_knitted.bean.Post;
+import com.example.hand_knitted.bean.Work;
+import com.example.hand_knitted.presenter.HKPresenter;
+import com.example.hand_knitted.presenter.IHKPresenter;
+import com.example.hand_knitted.view.IHKView;
+import org.jetbrains.annotations.NotNull;
+import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
 import butterknife.Unbinder;
-import cn.bmob.v3.BmobUser;
 
 
 public class FeedFragment extends Fragment implements IHKView {
@@ -51,15 +38,13 @@ public class FeedFragment extends Fragment implements IHKView {
     private IHKPresenter hkPresenter;
     private Unbinder unbinder;
     private FeedAdapter feedAdapter;
-    private FeedAdapter feedAdaptersnap;
 
     private int tool;
     private int group;
     private int style;
     private Toast toast;
 
-    //   private Boolean isFirstTime = true;
-//    private Boolean isFirstTimes = true;
+    private Boolean isFirstTime = true;
     private Boolean isSnap = false;
 
     //tool spinner监听
@@ -106,17 +91,11 @@ public class FeedFragment extends Fragment implements IHKView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //  progressBar = view.findViewById(R.id.PB);
         feedAdapter = new FeedAdapter(hkPresenter);
-        feedAdaptersnap = new FeedAdapter(hkPresenter);
         List<String> list = hkPresenter.inqueryLikePost();
         feedAdapter.setIds(list);
-        feedAdapter.setSnap(false);
-        feedAdaptersnap.setIds(list);
-        feedAdaptersnap.setSnap(true);
         hkPresenter.request("0.0.0", isSnap);//表示全选
         refreshLayout.setOnRefreshListener(() -> refreshData());
-
         recyclerView.setLayoutManager(new
                 StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
@@ -132,7 +111,7 @@ public class FeedFragment extends Fragment implements IHKView {
         super.onDestroyView();
         unbinder.unbind();
     }
-
+//才哥牛皮！！！！！
 
     public void refreshData() {
         String keyword = tool + "." + group + "." + style;
@@ -143,22 +122,20 @@ public class FeedFragment extends Fragment implements IHKView {
     @Override
     public void showWorkData(List<Work> list) {
 
-
-        if (isSnap) {
-            Log.i("feed中的snap的list的size为：",list.size()+"");
-            feedAdaptersnap.setWorkList(list);
-            recyclerView.setAdapter(feedAdaptersnap);
-            //   isFirstTimes = false;
-
-            feedAdaptersnap.notifyDataSetChanged();
-        } else {
-            Log.i("feed中的work的list的size为：",list.size()+"");
-            feedAdapter.setWorkList(list);
+        feedAdapter.setWorkList(list);
+        if(isFirstTime){
             recyclerView.setAdapter(feedAdapter);
-            //     isFirstTime = false;
+            isFirstTime =false;
 
+        }else{
             feedAdapter.notifyDataSetChanged();
         }
+
+        recyclerView.scrollToPosition(0);
+         //   Log.i("feed中的work的list的size为：", list.size() + "");
+
+
+
 
 
     }
@@ -186,6 +163,6 @@ public class FeedFragment extends Fragment implements IHKView {
 
     public void setSnap(Boolean snap) {
         isSnap = snap;
-        feedAdapter.setSnap(snap);
+
     }
 }
