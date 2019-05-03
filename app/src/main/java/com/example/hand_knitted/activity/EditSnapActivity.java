@@ -49,49 +49,37 @@ import cn.bmob.v3.listener.UploadFileListener;
 
 import static com.example.hand_knitted.util.MyUtils.IMAGE_PICKER;
 
-public class EditPostActivity extends BaseActivity implements View.OnClickListener, IHKView {
+public class EditSnapActivity extends BaseActivity implements View.OnClickListener, IHKView {
 
-    @BindView(R.id.TB2)
+    @BindView(R.id.TB2s)
     public Toolbar toolbar;
 
-    @BindView(R.id.ETtitle)
+    @BindView(R.id.ETtitles)
     public EditText ETtitle;
 
-    @BindView(R.id.tool)
-    public RadioGroup RGtool;
-    @BindView(R.id.group)
-    public RadioGroup RGgroup;
-    @BindView(R.id.style)
-    public RadioGroup RGstyle;
-
-    @BindView(R.id.IMG2)
+    @BindView(R.id.IMG2s)
     public ImageView img;
-    @BindView(R.id.IMG22)
-    public ImageView img2;
-    @BindView(R.id.IMG23)
-    public ImageView img3;
 
-    @BindView(R.id.ETcontent)
+    @BindView(R.id.ETcontents)
     public EditText ETcontent;
-    @BindView(R.id.PBh)
+    @BindView(R.id.PBhs)
     public ContentLoadingProgressBar progressBar;
 
 
     private IHKPresenter presenter = new HKPresenter(this);
     private Boolean isADD;
     private String picPath;
-    private String picPath2;
-    private String picPath3;
     private Post myPost;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_post);
+        setContentView(R.layout.activity_edit_snap);
+
 
         ImagePicker imagePicker = ImagePicker.getInstance();
-        imagePicker.setSelectLimit(3);
+        imagePicker.setSelectLimit(1);                        //选中数量限制
 
         progressBar.hide();
         setSupportActionBar(toolbar);
@@ -101,8 +89,6 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
             actionBar.setHomeAsUpIndicator(R.drawable.ic_arrow_back);
         }
         img.setOnClickListener(this);
-        img2.setOnClickListener(this);
-        img3.setOnClickListener(this);
         Intent intent = getIntent();
         isADD = intent.getBooleanExtra("isADD", false);
 
@@ -179,13 +165,7 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
             if (data != null && requestCode == IMAGE_PICKER) {
                 ArrayList<ImageItem> images = (ArrayList<ImageItem>) data.getSerializableExtra(ImagePicker.EXTRA_RESULT_ITEMS);
                 picPath = images.get(0).path;
-                picPath2 = images.get(1).path;
-                picPath3 = images.get(2).path;
-                Glide.with(this).load(picPath2).into(img2);
                 Glide.with(this).load(picPath).into(img);
-                Glide.with(this).load(picPath3).into(img3);
-
-
             } else {
                 Toast.makeText(this, "没有数据", Toast.LENGTH_SHORT).show();
             }
@@ -199,12 +179,7 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
 
         ETtitle.setText(post.getTitle());
         ETcontent.setText(post.getContent());
-        RGgroup.check(MyUtils.groupid[Integer.parseInt(post.getGroup()) - 1]);
-        RGtool.check(MyUtils.toolid[Integer.parseInt(post.getTool()) - 1]);
-        RGstyle.check(MyUtils.styleid[Integer.parseInt(post.getStyle()) - 1]);
         Glide.with(this).load(post.getImage().getFileUrl()).into(img);
-        Glide.with(this).load(post.getImage2().getFileUrl()).into(img2);
-        Glide.with(this).load(post.getImage3().getFileUrl()).into(img3);
 
 
     }
@@ -214,58 +189,12 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
         Post post = new Post();
         String title = ETtitle.getText().toString();
         String content = ETcontent.getText().toString();
-        String tool = "1";
-        String group = "1";
-        String style = "1";
-        switch (RGtool.getCheckedRadioButtonId()) {
-            //    case R.id.RBtool1:tool = "1";break;
-            case R.id.RBtool2:
-                tool = "2";
-                break;
-            case R.id.RBtool3:
-                tool = "3";
-                break;
-        }
-        switch (RGgroup.getCheckedRadioButtonId()) {
-            //    case R.id.RBgroup1:group = "1";break;
-            case R.id.RBgroup2:
-                group = "2";
-                break;
-            case R.id.RBgroup3:
-                group = "3";
-                break;
-            case R.id.RBgroup4:
-                group = "4";
-                break;
-            case R.id.RBgroup5:
-                group = "5";
-                break;
-
-        }
-        switch (RGstyle.getCheckedRadioButtonId()) {
-            //   case R.id.RBstyle1:style = "1";break;
-            case R.id.RBstyle2:
-                style = "2";
-                break;
-            case R.id.RBstyle3:
-                style = "3";
-                break;
-            case R.id.RBstyle4:
-                style = "4";
-                break;
-            case R.id.RBstyle5:
-                style = "5";
-                break;
-        }
 
         post.setContent(content);
         post.setTitle(title);
         post.setAuthor(BmobUser.getCurrentUser(User.class));
-        post.setGroup(group);
-        post.setTool(tool);
-        post.setStyle(style);
-        post.setSnap(false);
         post.setDate(MyUtils.getCurrentDate());
+        post.setSnap(true);
         if ((!isADD) && (picPath == null)) {
             post.setObjectId(myPost.getObjectId());
             presenter.updatePost(post);
@@ -274,21 +203,17 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
 
 
         //  BmobFile img = new BmobFile(new File(picPath));
-        final String[] filePaths = new String[3];
+        final String[] filePaths = new String[1];
         filePaths[0] = picPath;
-        filePaths[1] = picPath2;
-        filePaths[2] = picPath3;
         BmobFile.uploadBatch(filePaths, new UploadBatchListener() {
 
             @Override
             public void onSuccess(List<BmobFile> files, List<String> urls) {
 
-                Log.i("看到这个表明已经有图片上传成功","");
+                Log.i("看到这个表明已经有图片上传成功", "");
 
                 if (urls.size() == filePaths.length) {//如果数量相等，则代表文件全部上传完成
                     post.setImage(files.get(0));
-                    post.setImage2(files.get(1));
-                    post.setImage3(files.get(2));
                     if (isADD) {
                         presenter.addPost(post);
                         Log.i("三张图片均已上传完成", "");
@@ -307,10 +232,10 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onProgress(int curIndex, int curPercent, int total, int totalPercent) {
 
-                if(progressBar!=null){
+                if (progressBar != null) {
                     progressBar.show();
                     progressBar.setProgress(totalPercent);
-                    if(totalPercent==100)
+                    if (totalPercent == 100)
                         progressBar.hide();
                 }
                 //1、curIndex--表示当前第几个文件正在上传
@@ -337,10 +262,10 @@ public class EditPostActivity extends BaseActivity implements View.OnClickListen
             showToast("请先输入内容，再点击上传");
             return true;
         }
-        if (picPath == null || picPath2 == null || picPath3 == null) {
+        if (picPath == null) {
 
             if (isADD) {
-                showToast("必须选择三张图片，才能上传");
+                showToast("请先选择图片，再点击上传");
                 return true;
             }
 

@@ -44,6 +44,7 @@
             android:layout_marginRight="4dp"
             android:layout_marginBottom="16dp"
             android:fontFamily="sans-serif"
+            android:maxLength="8"
             android:hint="password"
             android:inputType="textPassword" />
 

@@ -15,6 +15,11 @@
 
 
     <item
+        android:id="@+id/logout"
+        android:title="登出"
+        app:showAsAction="never"/>
+
+    <item
         android:id="@+id/about"
         app:showAsAction="never"
         android:title="about">

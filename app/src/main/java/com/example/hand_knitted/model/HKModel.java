@@ -44,19 +44,23 @@ public class HKModel implements IHKModel {
         String[] str = keyword.split("\\.");//传入的keyword形式必须如 3.1.5  ;分裂成 3(工具：钩织结合)，1(适用：儿童)，5(款式：叶子花);0表示全部all
 
 
-        if (!"0".equals(str[0])) {
-            query.addWhereEqualTo("tool", str[0]);
+        if(!isSnap){
+
+            if (!"0".equals(str[0])) {
+                query.addWhereEqualTo("tool", str[0]);
+            }
+
+
+            if (!"0".equals(str[1])) {
+                query.addWhereEqualTo("group", str[1]);
+            }
+
+
+            if (!"0".equals(str[2])) {
+                query.addWhereEqualTo("style", str[2]);
+            }
         }
 
-
-        if (!"0".equals(str[1])) {
-            query.addWhereEqualTo("group", str[1]);
-        }
-
-
-        if (!"0".equals(str[2])) {
-            query.addWhereEqualTo("style", str[2]);
-        }
 
         Log.i("传入的keyword是否正确", str[0] + "/" + str[1] + "/" + str[2]);
 
@@ -161,9 +165,10 @@ public class HKModel implements IHKModel {
 
 
     @Override
-    public void inqueryPost() {
+    public void inqueryPost(Boolean isSnap) {
         BmobQuery<Post> query = new BmobQuery<>();
         query.addWhereEqualTo("author", currentUser);
+        query.addWhereEqualTo("isSnap",isSnap);
         query.order("-updatedAt");
         //包含作者信息
         query.include("author");
@@ -190,7 +195,7 @@ public class HKModel implements IHKModel {
             public void done(BmobException e) {
                 if (e == null) {
                     presenter.updateResult("帖子更新成功");
-                    Log.i("更新帖子成功","000000");
+                   // Log.i("更新帖子成功","000000");
                 } else {
                     presenter.updateResult("帖子更新失败：" + e.getMessage() + e.getErrorCode());
                     Log.i("更新帖子失败",e.getErrorCode()+e.getMessage());

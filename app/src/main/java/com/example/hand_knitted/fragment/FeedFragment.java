@@ -50,20 +50,22 @@ public class FeedFragment extends Fragment implements IHKView {
 
     private IHKPresenter hkPresenter;
     private Unbinder unbinder;
-    private View view;
     private FeedAdapter feedAdapter;
+    private FeedAdapter feedAdaptersnap;
 
     private int tool;
     private int group;
     private int style;
     private Toast toast;
 
-    private Boolean isFirstTime = true;
+    //   private Boolean isFirstTime = true;
+//    private Boolean isFirstTimes = true;
+    private Boolean isSnap = false;
 
     //tool spinner监听
     @OnItemSelected(R.id.spinner1)
     void onToolItemSelected(int position) {
-        Log.i("spinner点击监听回调已执行tool：",String.valueOf(position));
+        Log.i("spinner点击监听回调已执行tool：", String.valueOf(position));
         tool = position;
         refreshData();
     }
@@ -92,9 +94,9 @@ public class FeedFragment extends Fragment implements IHKView {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_feed, container, false);
+        super.onCreateView(inflater, container, savedInstanceState);
+        View view = inflater.inflate(R.layout.fragment_feed, container, false);
         //返回一个Unbinder值（进行解绑），注意这里的this不能使用getActivity()
-
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
@@ -104,25 +106,22 @@ public class FeedFragment extends Fragment implements IHKView {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-      //  progressBar = view.findViewById(R.id.PB);
+        //  progressBar = view.findViewById(R.id.PB);
         feedAdapter = new FeedAdapter(hkPresenter);
-        feedAdapter.setIds(hkPresenter.inqueryLikePost());
-        hkPresenter.request("0.0.0", false);//表示全选
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-            }
-        });
-
-
+        feedAdaptersnap = new FeedAdapter(hkPresenter);
+        List<String> list = hkPresenter.inqueryLikePost();
+        feedAdapter.setIds(list);
+        feedAdapter.setSnap(false);
+        feedAdaptersnap.setIds(list);
+        feedAdaptersnap.setSnap(true);
+        hkPresenter.request("0.0.0", isSnap);//表示全选
+        refreshLayout.setOnRefreshListener(() -> refreshData());
 
         recyclerView.setLayoutManager(new
                 StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
 
     }
-
 
 
     /**
@@ -137,8 +136,7 @@ public class FeedFragment extends Fragment implements IHKView {
 
     public void refreshData() {
         String keyword = tool + "." + group + "." + style;
-        hkPresenter.request(keyword, false);
-
+        hkPresenter.request(keyword, isSnap);
     }
 
 
@@ -146,12 +144,23 @@ public class FeedFragment extends Fragment implements IHKView {
     public void showWorkData(List<Work> list) {
 
 
-        feedAdapter.setWorkList(list);
-        if(isFirstTime){
+        if (isSnap) {
+            Log.i("feed中的snap的list的size为：",list.size()+"");
+            feedAdaptersnap.setWorkList(list);
+            recyclerView.setAdapter(feedAdaptersnap);
+            //   isFirstTimes = false;
+
+            feedAdaptersnap.notifyDataSetChanged();
+        } else {
+            Log.i("feed中的work的list的size为：",list.size()+"");
+            feedAdapter.setWorkList(list);
             recyclerView.setAdapter(feedAdapter);
-            isFirstTime = false;
+            //     isFirstTime = false;
+
+            feedAdapter.notifyDataSetChanged();
         }
-        feedAdapter.notifyDataSetChanged();
+
+
     }
 
     @Override
@@ -159,13 +168,12 @@ public class FeedFragment extends Fragment implements IHKView {
         refreshLayout.setRefreshing(show);
     }
 
-
     @Override
     public void showResultToast(String info) {
 
-        if(toast==null){
-            toast=Toast.makeText(this.getActivity(),info,Toast.LENGTH_SHORT);
-        }else {
+        if (toast == null) {
+            toast = Toast.makeText(this.getActivity(), info, Toast.LENGTH_SHORT);
+        } else {
             toast.setText(info);
         }
         toast.show();
@@ -174,5 +182,10 @@ public class FeedFragment extends Fragment implements IHKView {
     @Override
     public void showPostData(List<Post> posts) {
         //空着/此View中用不上
+    }
+
+    public void setSnap(Boolean snap) {
+        isSnap = snap;
+        feedAdapter.setSnap(snap);
     }
 }

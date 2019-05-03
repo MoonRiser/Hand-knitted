@@ -7,12 +7,14 @@ import cn.bmob.v3.datatype.BmobRelation;
 
 public class Post extends BmobObject {
 
-    private Boolean isSnap;//0：作品，1：随拍
+    private Boolean isSnap;//
     private String tool;//编织工具
     private String group;//适用人群
     private String Style;//款式
     private String title;//帖子的标题
     private BmobFile image;//帖子的配图
+    private BmobFile image2;
+    private BmobFile image3;
     private String content;//帖子的内容
   //  private BmobRelation likes;//点赞喜欢
     private User author;//帖子的作者
@@ -88,5 +90,21 @@ public class Post extends BmobObject {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public BmobFile getImage2() {
+        return image2;
+    }
+
+    public void setImage2(BmobFile image2) {
+        this.image2 = image2;
+    }
+
+    public BmobFile getImage3() {
+        return image3;
+    }
+
+    public void setImage3(BmobFile image3) {
+        this.image3 = image3;
     }
 }

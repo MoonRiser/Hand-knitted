@@ -17,18 +17,20 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.viewpager.widget.ViewPager;
 
+import com.ddz.floatingactionbutton.FloatingActionButton;
+import com.ddz.floatingactionbutton.FloatingActionMenu;
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.TabFragmentAdapter;
 import com.example.hand_knitted.fragment.FeedFragment;
 import com.example.hand_knitted.fragment.MyWorkFragment;
 import com.example.hand_knitted.util.MyUtils;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
+import cn.bmob.v3.BmobUser;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
@@ -39,8 +41,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public ViewPager pager;
     @BindView(R.id.tab)
     public TabLayout tabs;
-    @BindView(R.id.FABadd)
-    public FloatingActionButton fab;
+    @BindView(R.id.FAB)
+    public FloatingActionMenu fab;
+    @BindView(R.id.FABwork)
+    public FloatingActionButton fabwork;
+    @BindView(R.id.FABsnap)
+    public com.ddz.floatingactionbutton.FloatingActionButton fabsnap;
 
     private Fragment f1;
     private Fragment f2;
@@ -71,33 +77,44 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.darkMode:
                 darkModeSwith();
                 break;
-            case R.id.setting:
+            case R.id.about:
+                showToastLong("copyright reserved,balabala");
                 break;
+            case R.id.setting:
+                showToastLong("占位待实现");
+                break;
+            case R.id.logout:
+                BmobUser.logOut();
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+                break;
+
         }
         return true;
     }
 
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==MyUtils.POST_EDIT){
+        if (requestCode == MyUtils.POST_EDIT) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(700);//线程沉睡否则容易出现同步问题
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             ((FeedFragment) f1).refreshData();
-            ((MyWorkFragment) f2).getPresenter().inqueryPost();
+            ((MyWorkFragment) f2).reFreshData();
         }
     }
 
     private void init() {
 
         setSupportActionBar(toolbar);
+        fab.setButtonIcon(R.drawable.ic_cached_black_24dp);
         initTabViewPager();
-        fab.setOnClickListener(this);
+        // fabwork.setOnClickListener(this);
     }
 
 
@@ -129,9 +146,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 switch (position) {
                     case 0:
                         fabSiwth(false);
+                        fab.setButtonIcon(R.drawable.ic_cached_black_24dp);
                         break;
                     case 1:
                         fabSiwth(true);
+                        fab.setButtonIcon(R.drawable.ic_add_black_24dp);
                         break;
                 }
             }
@@ -177,12 +196,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     public void fabSiwth(Boolean show) {
-        if (fab == null)
+        if (fabwork == null || fabsnap == null)
             return;
         if (show) {
-            fab.show();
+            fabwork.setOnClickListener(this);
+            fabsnap.setOnClickListener(this);
         } else {
-            fab.hide();
+            fabwork.setOnClickListener(v -> {
+
+                ((FeedFragment)f1).setSnap(false);
+                ((MyWorkFragment)f2).setSnap(false);
+                ((FeedFragment) f1).refreshData();
+                ((MyWorkFragment) f2).reFreshData();
+                fab.collapse();
+            });
+            fabsnap.setOnClickListener(v -> {
+                ((FeedFragment)f1).setSnap(true);
+                ((MyWorkFragment)f2).setSnap(true);
+                ((FeedFragment) f1).refreshData();
+                ((MyWorkFragment) f2).reFreshData();
+                fab.collapse();
+            });
         }
 
     }
@@ -190,14 +224,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
+
+        Intent intent;
         switch (v.getId()) {
 
-            case R.id.FABadd:
-                Intent intent = new Intent(this, EditPostActivity.class);
+            case R.id.FABwork:
+                intent = new Intent(this, EditPostActivity.class);
                 intent.putExtra("isADD", true);//发表新帖子和更新旧帖子用同一个EditPostActivity，所以用这个标志区分一下
-                startActivityForResult(intent, MyUtils.POST_EDIT);
                 break;
+            default:
+                intent = new Intent(this, EditSnapActivity.class);
+                intent.putExtra("isADD", true);
+                break;
+
         }
+        startActivityForResult(intent, MyUtils.POST_EDIT);
 
     }
 }

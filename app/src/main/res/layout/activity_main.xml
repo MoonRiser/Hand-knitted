@@ -22,8 +22,7 @@
                 android:id="@+id/TB2"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_scrollFlags="scroll|snap|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                app:layout_scrollFlags="scroll|snap|enterAlways" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab"
@@ -41,15 +40,35 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/FABadd"
+        <com.ddz.floatingactionbutton.FloatingActionMenu
+            android:id="@+id/FAB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
-            android:layout_margin="32dp"
-            android:clickable="true"
-            android:src="@drawable/ic_add_black_24dp"
-            app:fabSize="normal" />
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="48dp"
+            app:fab_addButtonColorNormal="@color/colorAccent"
+            app:fab_addButtonSize="normal"
+            app:fab_labelStyle="@style/lable_style">
+
+            <com.ddz.floatingactionbutton.FloatingActionButton
+                android:id="@+id/FABwork"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_size="mini"
+                app:fab_title="作品"
+                app:fab_icon="@drawable/ic_card_giftcard_black_24dp"/>
+
+            <com.ddz.floatingactionbutton.FloatingActionButton
+                android:id="@+id/FABsnap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:fab_colorNormal="@color/colorAccent"
+                app:fab_size="mini"
+                app:fab_title="随拍"
+                app:fab_icon="@drawable/ic_camera_alt_black_24dp"/>
+        </com.ddz.floatingactionbutton.FloatingActionMenu>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

@@ -1,6 +1,7 @@
 package com.example.hand_knitted.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -34,7 +36,7 @@ import butterknife.Unbinder;
 import cn.bmob.v3.BmobUser;
 
 
-public class MyWorkFragment extends Fragment implements IHKView, View.OnClickListener {
+public class MyWorkFragment extends Fragment implements IHKView {
 
 
     @BindView(R.id.RVmywork)
@@ -55,8 +57,14 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     private View view;
     private Unbinder unbinder;
     private MyWorkAdapter myWorkAdapter;
+    private MyWorkAdapter myWorkAdaptersnap;
     private Toast toast;
-    private Boolean iSFirstTime = true;
+    //  private Boolean iSFirstTime = true;
+    private Boolean isSnap = false;
+
+    public MyWorkFragment() {
+        presenter = new HKPresenter(this);
+    }
 
     @Nullable
     @Override
@@ -71,19 +79,21 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         progressBar = view.findViewById(R.id.PB2);
-        presenter = new HKPresenter(this);
-        myWorkAdapter = new MyWorkAdapter();
-        myWorkAdapter.setPresenter(presenter);
-        presenter.inqueryPost();
+
+        myWorkAdapter = new MyWorkAdapter(presenter);
+        myWorkAdaptersnap = new MyWorkAdapter(presenter);
+        myWorkAdapter.setSnap(false);
+        myWorkAdaptersnap.setSnap(true);
+        presenter.inqueryPost(isSnap);
         recyclerView.setLayoutManager(new
-                StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-        refresh.setOnClickListener(this);
+                LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
+        refresh.setOnClickListener(v -> reFreshData());
 
         User myself = BmobUser.getCurrentUser(User.class);
         me.setText(myself.getUsername());
-        if("male".equals(myself.getSex())){
+        if ("male".equals(myself.getSex())) {
             Glide.with(getActivity()).load(R.drawable.ic_male).into(sex);
-        }else {
+        } else {
             Glide.with(getActivity()).load(R.drawable.ic_female).into(sex);
         }
 
@@ -98,8 +108,8 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     }
 
 
-    public IHKPresenter getPresenter() {
-        return presenter;
+    public void reFreshData() {
+        presenter.inqueryPost(isSnap);
     }
 
     @Override
@@ -116,12 +126,19 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
     @Override
     public void showPostData(List<Post> posts) {
 
-        myWorkAdapter.setPosts(posts);
-        if(iSFirstTime){
+        if (isSnap) {
+            Log.i("随拍回调成功，size多少？", posts.size() + "");
+            myWorkAdaptersnap.setPosts(posts);
+            //   recyclerView.swapAdapter(mySnapAdapter,true);
+            recyclerView.setAdapter(myWorkAdaptersnap);
+            myWorkAdaptersnap.notifyDataSetChanged();
+        } else {
+            Log.i("作品回调成功，size多少？", posts.size() + "");
+            myWorkAdapter.setPosts(posts);
+            //     recyclerView.swapAdapter(myWorkAdapter,true);
             recyclerView.setAdapter(myWorkAdapter);
-            iSFirstTime = false;
+            myWorkAdapter.notifyDataSetChanged();
         }
-        myWorkAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
 
 
@@ -145,11 +162,9 @@ public class MyWorkFragment extends Fragment implements IHKView, View.OnClickLis
         //空着/此View中用不上
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.BTrefresh) {
-            presenter.inqueryPost();
-        }
 
+
+    public void setSnap(Boolean snap) {
+        isSnap = snap;
     }
 }

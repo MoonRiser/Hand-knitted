@@ -14,10 +14,9 @@ public interface IHKPresenter {
     void deletePost(Post post);//删除选中的帖子
     void addPost(Post post);//发表新的帖子
     void addComment(Comment comment);//发表新的评论
-    void inqueryPost();//查询本用户所有的发帖，可以不带参数
+    void inqueryPost(Boolean isSnap);//查询本用户所有的发帖，可以不带参数
     void updatePost(Post post);//更新用户对帖子做的更改
     List<String> inqueryLikePost();
-
 
 
     void requestSuccess(List<Work> result);

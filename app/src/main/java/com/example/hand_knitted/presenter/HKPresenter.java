@@ -35,9 +35,9 @@ public class HKPresenter implements IHKPresenter {
 
 
     @Override
-    public void inqueryPost() {
+    public void inqueryPost(Boolean isSnap) {
         view.showProgress(true);
-        model.inqueryPost();
+        model.inqueryPost(isSnap);
     }
 
     @Override

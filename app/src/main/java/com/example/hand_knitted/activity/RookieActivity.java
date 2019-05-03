@@ -22,6 +22,17 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
     public ImageView hook;
     @BindView(R.id.BTskip)
     public Button skip;
+    @BindView(R.id.BTstyle1)
+    public Button style1;
+    @BindView(R.id.BTstyle2)
+    public Button style2;
+    @BindView(R.id.BTstyle3)
+    public Button style3;
+    @BindView(R.id.BTstyle4)
+    public Button style4;
+    @BindView(R.id.BTstyle5)
+    public Button style5;
+
     private SharedPreferences.Editor editor;
 
 
@@ -31,10 +42,10 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
         setContentView(R.layout.activity_rookie);
         init();
 
-
         Glide.with(this).load(R.drawable.stick).into(stick);
         Glide.with(this).load(R.drawable.hook).into(hook);
-        skip.setOnClickListener(this);
+
+
 
     }
 
@@ -42,34 +53,43 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
     @Override
     public void onClick(View v) {
 
-        switch (v.getId()){
+        switch (v.getId()) {
 
-            case R.id.BTskip : skipImp();break;
+            case R.id.BTskip:
+                skipImp();
+                break;
+            default:Intent intent = new Intent(this,TutorialActivity.class);
+            startActivity(intent);break;
         }
     }
 
 
-
-    private void init(){
-     //   stick = findViewById(R.id.IMGstick);
-     //   hook = findViewById(R.id.IMGhook);
-     //   skip = findViewById(R.id.BTskip);
+    private void init() {
+        //   stick = findViewById(R.id.IMGstick);
+        //   hook = findViewById(R.id.IMGhook);
+        //   skip = findViewById(R.id.BTskip);
+        skip.setOnClickListener(this);
+        hook.setOnClickListener(this);
+        stick.setOnClickListener(this);
+        style1.setOnClickListener(this);
+        style2.setOnClickListener(this);
+        style3.setOnClickListener(this);
+        style4.setOnClickListener(this);
+        style5.setOnClickListener(this);
         editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
 
 
     }
 
 
+    private void skipImp() {
 
-    private void skipImp(){
-
-        editor.putBoolean("isRookie",false);
+        editor.putBoolean("isRookie", false);
         editor.apply();
-        Intent intent = new Intent(RookieActivity.this,MainActivity.class);
+        Intent intent = new Intent(RookieActivity.this, MainActivity.class);
         startActivity(intent);
 
     }
-
 
 
 }

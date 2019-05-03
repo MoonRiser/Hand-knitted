@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.hand_knitted">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
@@ -15,18 +14,22 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launcher0"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <activity android:name=".activity.EditPostActivity" />
+        <activity android:name=".activity.EditSnapActivity"
+            android:label="随拍发帖"></activity>
+        <activity android:name=".activity.TutorialActivity" />
+        <activity android:name=".activity.EditPostActivity"
+            android:label="作品发帖"/>
         <activity android:name=".activity.WorkDetailActivity" />
         <activity android:name=".activity.RookieActivity" />
 
@@ -44,8 +47,9 @@
         <activity
             android:name=".activity.LoginActivity"
             android:theme="@style/HideStatusBarTheme" />
-        <activity android:name=".activity.MainActivity"
-            android:theme="@style/MainActivityTheme"/>
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/MainActivityTheme" />
     </application>
 
 </manifest>

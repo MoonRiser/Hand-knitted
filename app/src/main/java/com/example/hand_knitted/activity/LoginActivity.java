@@ -246,6 +246,8 @@ public class LoginActivity extends BaseActivity {
             public void done(User s, BmobException e) {
                 if (e == null) {
                     Toast.makeText(LoginActivity.this, "注册成功:"+bu.getUsername()+"你好" , Toast.LENGTH_LONG).show();
+                    name.setText(userStr);
+                    pwd.setText(passwdStr);
                 } else {
                     Log.i("bmob", "注册失败：" + e.getMessage() + "," + e.getErrorCode());
                     if (e.getErrorCode() == 202) {
