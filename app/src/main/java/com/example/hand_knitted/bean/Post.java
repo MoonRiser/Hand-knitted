@@ -10,7 +10,7 @@ public class Post extends BmobObject {
     private Boolean isSnap;//
     private String tool;//编织工具
     private String group;//适用人群
-    private String Style;//款式
+    private String style;//款式
     private String title;//帖子的标题
     private BmobFile image;//帖子的配图
     private BmobFile image2;
@@ -45,11 +45,11 @@ public class Post extends BmobObject {
     }
 
     public String getStyle() {
-        return Style;
+        return style;
     }
 
     public void setStyle(String style) {
-        Style = style;
+        this.style = style;
     }
 
     public String getTitle() {

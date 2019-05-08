@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -17,8 +18,10 @@ import com.example.hand_knitted.R;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 public class MyUtils {
 
@@ -106,7 +109,6 @@ public class MyUtils {
         return temp;
     }
 
-
     private static void ShareImage(Context context, String imagePath){
         if (imagePath != null){
             Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
@@ -123,7 +125,6 @@ public class MyUtils {
         }
     }
 
-
     /**截屏分享，供外部调用**/
     public static void shotShare(Context context,View toSaveView){
         //截屏
@@ -132,6 +133,28 @@ public class MyUtils {
         if(path!=null){
             ShareImage(context,path);
         }
+    }
+
+    public static String getBmobKey(Context context,String key){
+
+        Properties properties = new Properties();
+        try {
+                //方法一：通过activity中的context攻取setting.properties的FileInputStream
+                InputStream in = context.getAssets().open("appConfig.properties");
+                //方法二：通过class获取setting.properties的FileInputStream
+                //InputStream in = PropertiesUtill.class.getResourceAsStream("/assets/  setting.properties "));
+                properties.load(in);
+            } catch (Exception e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+
+
+        Log.i("读取到的配置文件为/",properties.getProperty(key));
+       // Log.i("读取到的配置文件为/","0000");
+        return properties.getProperty(key);
+
+
     }
 
 

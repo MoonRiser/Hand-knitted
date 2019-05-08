@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initTabViewPager() {
         final List<String> tabList = new ArrayList<>();
         final int[] materalColor = getResources().getIntArray(R.array.material_color);
-        tabList.add("Feed流");
+        tabList.add("全部作品");
         tabList.add("本人作品");
         // tabList.add("随拍");
 

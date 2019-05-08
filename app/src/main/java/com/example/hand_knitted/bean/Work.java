@@ -8,6 +8,8 @@ public class Work {
     private Post post;
     private List<Comment> comments;
 
+    public Work() {
+    }
 
     public Work(Post post, List<Comment> comments) {
        // post.setSnap(false);

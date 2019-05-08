@@ -29,10 +29,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="16dp"
-                    android:text="王境泽"
+                    android:text="王境泽大傻逼"
                     android:textAlignment="center"
 
-                    android:textSize="36sp"
+                    android:textSize="32sp"
                     android:textStyle="bold" />
 
                 <ImageView
@@ -45,15 +45,7 @@
                     android:layout_toEndOf="@id/TVme"
                     android:src="@drawable/ic_female" />
 
-                <TextView
-                    android:id="@+id/TV6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignBottom="@id/IMGsex"
-                    android:layout_marginStart="32dp"
-                    android:layout_toEndOf="@id/IMGsex"
-                    android:text="我的帖子"
-                    android:textSize="18sp" />
+
 
                 <Button
                     android:id="@+id/BTrefresh"

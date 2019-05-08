@@ -27,9 +27,17 @@ import com.example.hand_knitted.util.MyUtils;
 import org.jetbrains.annotations.NotNull;
 
 import butterknife.BindView;
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import io.reactivex.Observable;
+import io.reactivex.Observer;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 
 public class LoginActivity extends BaseActivity {
@@ -183,7 +191,8 @@ public class LoginActivity extends BaseActivity {
         User bu = new User();
         bu.setUsername(account);
         bu.setPassword(password);
-        bu.login(new SaveListener<BmobUser>() {
+        /*
+         bu.login(new SaveListener<BmobUser>() {
             @Override
             public void done(BmobUser s, BmobException e) {
                 if (e == null) {
@@ -211,6 +220,54 @@ public class LoginActivity extends BaseActivity {
                 }
             }
         });
+         */
+        Observable<BmobUser>  userObservable = bu.loginObservable(BmobUser.class);
+        userObservable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<BmobUser>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(BmobUser bmobUser) {
+                        Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
+                        if (remPWD.isChecked()) {
+                            editor.putBoolean("remember_password", true);
+                            editor.putString("account", account);
+                            editor.putString("password", password);
+                        } else {
+                            editor.clear();
+                        }
+
+                        editor.apply();
+                        //  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                        Intent intent = new Intent(LoginActivity.this, RookieActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable exception) {
+                        BmobException e = (BmobException) exception;
+                        if (e.getErrorCode() == 9016) {
+                            Toast.makeText(LoginActivity.this, "网络不可用，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, "账号或密码错误（password or account is not valid）", Toast.LENGTH_LONG).show();
+                        }
+                        Log.i("bmob", "登陆失败：" + e.getMessage() + "," + e.getErrorCode());
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+
+
+
     }
 
     private void registerBmob() {
@@ -228,8 +285,12 @@ public class LoginActivity extends BaseActivity {
         } else {
             sex = "female";
         }
+        if(userStr.length()<1){
+            showToast("账号为空，请先输入");
+        }
+
         if (passwdStr.length() < 8) {
-            Toast.makeText(LoginActivity.this, "密码至少8位", Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "密码长度需要8位", Toast.LENGTH_LONG).show();
             //      removeParentsView(dialogSignIn);
             return;
         }

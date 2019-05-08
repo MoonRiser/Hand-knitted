@@ -12,6 +12,7 @@ import com.example.hand_knitted.presenter.IHKPresenter;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobBatch;
 import cn.bmob.v3.BmobObject;
 import cn.bmob.v3.BmobQuery;
@@ -23,6 +24,13 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Function;
+import io.reactivex.schedulers.Schedulers;
 
 public class HKModel implements IHKModel {
 
@@ -44,7 +52,7 @@ public class HKModel implements IHKModel {
         String[] str = keyword.split("\\.");//传入的keyword形式必须如 3.1.5  ;分裂成 3(工具：钩织结合)，1(适用：儿童)，5(款式：叶子花);0表示全部all
 
 
-        if(!isSnap){
+        if (!isSnap) {
 
             if (!"0".equals(str[0])) {
                 query.addWhereEqualTo("tool", str[0]);
@@ -95,7 +103,6 @@ public class HKModel implements IHKModel {
 
     @Override
     public void deletePost(Post post) {
-
 
 
         BmobQuery<Comment> queryComment = new BmobQuery<>();
@@ -152,12 +159,12 @@ public class HKModel implements IHKModel {
         comment.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                if(e==null){
-                   // comment.setObjectId(s);
+                if (e == null) {
+                    // comment.setObjectId(s);
                     presenter.updateResult("发表评论成功");
-                }else{
+                } else {
                     presenter.updateResult("发表评论失败");
-                    Log.i("评论失败的原因是：",e.getErrorCode()+e.getMessage());
+                    Log.i("评论失败的原因是：", e.getErrorCode() + e.getMessage());
                 }
             }
         });
@@ -168,7 +175,7 @@ public class HKModel implements IHKModel {
     public void inqueryPost(Boolean isSnap) {
         BmobQuery<Post> query = new BmobQuery<>();
         query.addWhereEqualTo("author", currentUser);
-        query.addWhereEqualTo("isSnap",isSnap);
+        query.addWhereEqualTo("isSnap", isSnap);
         query.order("-updatedAt");
         //包含作者信息
         query.include("author");
@@ -195,10 +202,10 @@ public class HKModel implements IHKModel {
             public void done(BmobException e) {
                 if (e == null) {
                     presenter.updateResult("帖子更新成功");
-                   // Log.i("更新帖子成功","000000");
+                    // Log.i("更新帖子成功","000000");
                 } else {
                     presenter.updateResult("帖子更新失败：" + e.getMessage() + e.getErrorCode());
-                    Log.i("更新帖子失败",e.getErrorCode()+e.getMessage());
+                    Log.i("更新帖子失败", e.getErrorCode() + e.getMessage());
                 }
             }
         });
@@ -218,7 +225,7 @@ public class HKModel implements IHKModel {
                     presenter.updateResult("收藏成功");
                 } else {
                     presenter.updateResult("收藏失败：" + e.getErrorCode() + e.getMessage());
-                    Log.i("收藏失败：",e.getErrorCode()+e.getMessage());
+                    Log.i("收藏失败：", e.getErrorCode() + e.getMessage());
                 }
             }
         });
@@ -252,7 +259,7 @@ public class HKModel implements IHKModel {
                     );
                 } else {
                     presenter.updateResult("查询Like表发生错误：" + e.getErrorCode() + e.getMessage());
-                    Log.i("查询Like表发生错误：",e.getErrorCode()+"");
+                    Log.i("查询Like表发生错误：", e.getErrorCode() + "");
                 }
             }
         });
@@ -292,19 +299,20 @@ public class HKModel implements IHKModel {
     }
 
 
-
     //将Post和comment构造成Work类型
     private void prepareData(List<Post> posts) {
 
 
         List<Work> works = new ArrayList<>();
+        Work work = new Work();
+        /*
         for (int i = 0; i < posts.size(); i++) {
             BmobQuery<Comment> queryComment = new BmobQuery<>();
             Post post = posts.get(i);
             queryComment.addWhereEqualTo("post", post);
             queryComment.setLimit(500);
             queryComment.include("author");
-            queryComment.order("createdAt"); //排序912e46c1a4
+            queryComment.order("createdAt");
             queryComment.findObjects(new FindListener<Comment>() {
                 @Override
                 public void done(List<Comment> list, BmobException e) {
@@ -318,13 +326,65 @@ public class HKModel implements IHKModel {
                     }
                 }
             });
-        }
+        } */
+
+
+// BmobQuery<Comment> queryComment = new BmobQuery<>();
+
+        //       Observable<List<Comment>> commentObservable = queryComment.findObjectsObservable(Comment.class);
+
+
+        Observable.fromIterable(posts)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .concatMap((Function<Post, ObservableSource<List<Comment>>>) post1 -> {
+
+                    BmobQuery<Comment> queryComment = new BmobQuery<>();
+                    queryComment.addWhereEqualTo("post", post1);
+                    queryComment.setLimit(500);
+                    queryComment.include("author");
+                    queryComment.order("createdAt");
+                    work.setPost(post1);
+                    return queryComment.findObjectsObservable(Comment.class);
+
+                })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<Comment>>() {
+
+
+                               @Override
+                               public void onSubscribe(Disposable d) {
+
+                               }
+
+                               @Override
+                               public void onNext(List<Comment> comments) {
+
+                                   works.add(new Work(work.getPost(), comments));
+                                   if (works.size() == posts.size())//等数据都准备好再回调
+                                       presenter.requestSuccess(works);
+                               }
+
+                               @Override
+                               public void onError(Throwable ex) {
+                                   BmobException e = (BmobException) ex;
+                                   presenter.requestFail("bmob评论部分失败：" + e.getMessage() + "," + e.getErrorCode());
+                                   Log.i("bmob评论部分失败：", e.getMessage() + "," + e.getErrorCode());
+                               }
+
+                               @Override
+                               public void onComplete() {
+
+                               }
+                           }
+                );
 
 
     }
 
+
     //批量删除
-    private void deleteBatchCommment(List<Comment> comments) {
+    public void deleteBatchCommment(List<Comment> comments) {
 
         List<BmobObject> bmobObjects = new ArrayList<>(comments);
 

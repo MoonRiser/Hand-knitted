@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -19,7 +20,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        Bmob.initialize(this, "5bb030d2c8976622d951f1fb49e61ffc");
+        Bmob.initialize(this, MyUtils.getBmobKey(this,"BmobKey"));
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         initImagePicker();
         initDarkMode();

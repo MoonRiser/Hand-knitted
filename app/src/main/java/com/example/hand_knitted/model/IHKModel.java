@@ -10,11 +10,14 @@ public interface IHKModel {
     void requestData(String keyword,Boolean isSnap);
     void setFavorite(Post post);
     void cancelFavorite(Post post);
-    void deletePost(Post post);
     void addPost(Post post);
+    void deletePost(Post post);
     void inqueryPost(Boolean isSnap);
     void updatePost(Post post);
+
     void addComment(Comment comment);
+    void deleteBatchCommment(List<Comment> comments);
+
     List<String> inqueryLikePost();
 
 }
