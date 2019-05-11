@@ -154,7 +154,8 @@ public class EditSnapActivity extends BaseActivity implements View.OnClickListen
     public void showResultToast(String info) {
         showToastLong(info);
         if ("发帖成功".equals(info) || "帖子更新成功".equals(info)) {
-            finish();
+            //finish();
+            onBackPressed();
         }
     }
 

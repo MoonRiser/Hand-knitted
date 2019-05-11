@@ -10,6 +10,8 @@
 
 
     <array name="material_color">
+        <item>@color/grey500</item>
+        <item>@color/grey500</item>
         <item>@color/purple500</item>
         <item>@color/blue700</item>
         <item>@color/orange500</item>

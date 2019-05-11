@@ -1,5 +1,6 @@
 package com.example.hand_knitted.util;
 
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -21,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Properties;
 
 public class MyUtils {
@@ -77,7 +79,7 @@ public class MyUtils {
         toSaveView.setDrawingCacheEnabled(true);
         //获取bitmap
         Bitmap bitmapTemp = toSaveView.getDrawingCache();
-        bitmapTemp = Bitmap.createBitmap(bitmapTemp);
+       // bitmapTemp = Bitmap.createBitmap(bitmapTemp);
         //关闭缓存
         toSaveView.setDrawingCacheEnabled(false);
         //保存本地
@@ -126,8 +128,9 @@ public class MyUtils {
     }
 
     /**截屏分享，供外部调用**/
-    public static void shotShare(Context context,View toSaveView){
+    public static void shotShare(Context context, Dialog dialog){
         //截屏
+        View toSaveView = Objects.requireNonNull(dialog.getWindow()).getDecorView();
         String path= saveBitmapFile(toSaveView);
         //分享
         if(path!=null){

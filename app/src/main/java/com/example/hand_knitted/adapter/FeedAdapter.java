@@ -225,6 +225,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             builder0.setTitle("当前帖子");
             builder0.setView(dialogDetail);
             builder0.setCancelable(true);
+            dialog0 = builder0.create();
         }
         if (dialogDetails == null) {
             dialogDetails = LayoutInflater.from(context).inflate(R.layout.dialog_detail_snap, parent, false);
@@ -233,11 +234,12 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             builder0s.setTitle("当前随拍");
             builder0s.setView(dialogDetails);
             builder0s.setCancelable(true);
+            dialog0s = builder0s.create();
         }
 
-        if(viewType==TYPE_POST){
+        if (viewType == TYPE_POST) {
             return new ViewHolder(view);
-        }else{
+        } else {
             return new ViewHolderSnap(viewsnap);
         }
 
@@ -281,7 +283,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             viewHolder.cardView.setOnClickListener(v -> {
-                detailDisplayHelper(work,true);
+                detailDisplayHelper(work, true);
                 if (dialog0s == null) {
                     dialog0s = builder0s.show();
                 } else {
@@ -311,16 +313,14 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     isClicked = true;
                 }
             });
-            viewHolder.share.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (dialog0s == null) {
-                        dialog0s = builder0.show();
-                    } else {
-                        dialog0s.show();
-                    }
-                    MyUtils.shotShare(context, dialog0s.getWindow().getDecorView());
+            viewHolder.share.setOnClickListener(v -> {
+                detailDisplayHelper(work,true);
+                if (dialog0s == null) {
+                    dialog0s = builder0.create();
+                    Log.i("见鬼了的随拍dialog","被调用了");
                 }
+                dialog0s.show();
+                MyUtils.shotShare(context, dialog0s);
             });
 
 
@@ -362,7 +362,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             }
 
             viewHolder.cardView.setOnClickListener(v -> {
-                detailDisplayHelper(work,false);
+                detailDisplayHelper(work, false);
                 if (dialog0 == null) {
                     dialog0 = builder0.show();
                 } else {
@@ -380,12 +380,13 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
             viewHolder.share.setOnClickListener(v -> {
+                detailDisplayHelper(work, false);
                 if (dialog0 == null) {
                     dialog0 = builder0.show();
                 } else {
                     dialog0.show();
                 }
-                MyUtils.shotShare(context, dialog0.getWindow().getDecorView());
+                MyUtils.shotShare(context, dialog0);
             });
             viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
@@ -437,7 +438,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     }
 
 
-    private void detailDisplayHelper(Work work,Boolean isSnap) {
+    private void detailDisplayHelper(Work work, Boolean isSnap) {
         Post post = work.getPost();
         String name = post.getAuthor().getUsername();
         if (isSnap) {

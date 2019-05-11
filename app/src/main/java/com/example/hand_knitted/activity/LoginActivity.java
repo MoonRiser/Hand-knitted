@@ -8,8 +8,10 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -78,11 +80,11 @@ public class LoginActivity extends BaseActivity {
 
 
     private void init() {
-      //  name = findViewById(R.id.ETname);
-      //   pwd = findViewById(R.id.ETpwd);
-      //  remPWD = findViewById(R.id.CBremenber);
-      //  login = findViewById(R.id.BTlogin);
-      //  register = findViewById(R.id.BTregister);
+        //  name = findViewById(R.id.ETname);
+        //   pwd = findViewById(R.id.ETpwd);
+        //  remPWD = findViewById(R.id.CBremenber);
+        //  login = findViewById(R.id.BTlogin);
+        //  register = findViewById(R.id.BTregister);
 
         sp = PreferenceManager.getDefaultSharedPreferences(this);
         editor = sp.edit();
@@ -161,7 +163,7 @@ public class LoginActivity extends BaseActivity {
         //注册点击事件使用对话框进行注册
         register.setOnClickListener(v -> {
 
-            if(dialog==null){
+            if (dialog == null) {
                 final AlertDialog.Builder alertDialog = new AlertDialog.Builder(LoginActivity.this);
                 alertDialog.setTitle("用户注册");
                 alertDialog.setView(dialogRegister);
@@ -169,7 +171,7 @@ public class LoginActivity extends BaseActivity {
                     registerBmob();//在后台注册账户信息
                 });
                 dialog = alertDialog.show();
-            }else {
+            } else {
                 dialog.show();
             }
 
@@ -185,43 +187,12 @@ public class LoginActivity extends BaseActivity {
         password = pwd.getText().toString();
         if (account.length() == 0 || password.length() == 0) {//当账号或密码的输入为空时提示
             showToast("输入为空，请重试");
-            //Toast.makeText(this, "请输入账号密码", Toast.LENGTH_SHORT).show();
             return;
         }
-        User bu = new User();
-        bu.setUsername(account);
-        bu.setPassword(password);
-        /*
-         bu.login(new SaveListener<BmobUser>() {
-            @Override
-            public void done(BmobUser s, BmobException e) {
-                if (e == null) {
-                    Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
-                    if (remPWD.isChecked()) {
-                        editor.putBoolean("remember_password", true);
-                        editor.putString("account", account);
-                        editor.putString("password", password);
-                    } else {
-                        editor.clear();
-                    }
-
-                    editor.apply();
-                  //  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    Intent intent = new Intent(LoginActivity.this, RookieActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    if (e.getErrorCode() == 9016) {
-                        Toast.makeText(LoginActivity.this, "网络不可用，请检查你的网络连接", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(LoginActivity.this, "账号或密码错误（password or account is not valid）", Toast.LENGTH_LONG).show();
-                    }
-                    Log.i("bmob", "登陆失败：" + e.getMessage() + "," + e.getErrorCode());
-                }
-            }
-        });
-         */
-        Observable<BmobUser>  userObservable = bu.loginObservable(BmobUser.class);
+        User user = new User();
+        user.setUsername(account);
+        user.setPassword(password);
+        Observable<BmobUser> userObservable = user.loginObservable(BmobUser.class);
         userObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<BmobUser>() {
@@ -242,7 +213,6 @@ public class LoginActivity extends BaseActivity {
                         }
 
                         editor.apply();
-                        //  Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                         Intent intent = new Intent(LoginActivity.this, RookieActivity.class);
                         startActivity(intent);
                         finish();
@@ -265,9 +235,6 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
 
-
-
-
     }
 
     private void registerBmob() {
@@ -285,7 +252,7 @@ public class LoginActivity extends BaseActivity {
         } else {
             sex = "female";
         }
-        if(userStr.length()<1){
+        if (userStr.length() < 1) {
             showToast("账号为空，请先输入");
         }
 
@@ -306,7 +273,7 @@ public class LoginActivity extends BaseActivity {
             @Override
             public void done(User s, BmobException e) {
                 if (e == null) {
-                    Toast.makeText(LoginActivity.this, "注册成功:"+bu.getUsername()+"你好" , Toast.LENGTH_LONG).show();
+                    Toast.makeText(LoginActivity.this, "注册成功:" + bu.getUsername() + "你好", Toast.LENGTH_LONG).show();
                     name.setText(userStr);
                     pwd.setText(passwdStr);
                 } else {
@@ -318,7 +285,6 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
-
 
 
 }
