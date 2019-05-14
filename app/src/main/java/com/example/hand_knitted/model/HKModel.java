@@ -338,7 +338,6 @@ public class HKModel implements IHKModel {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .concatMap((Function<Post, ObservableSource<List<Comment>>>) post1 -> {
-
                     BmobQuery<Comment> queryComment = new BmobQuery<>();
                     queryComment.addWhereEqualTo("post", post1);
                     queryComment.setLimit(500);
@@ -350,7 +349,6 @@ public class HKModel implements IHKModel {
                 })
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<List<Comment>>() {
-
 
                                @Override
                                public void onSubscribe(Disposable d) {

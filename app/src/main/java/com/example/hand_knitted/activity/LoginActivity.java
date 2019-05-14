@@ -204,6 +204,7 @@ public class LoginActivity extends BaseActivity {
                     @Override
                     public void onNext(BmobUser bmobUser) {
                         Toast.makeText(LoginActivity.this, "登陆成功", Toast.LENGTH_LONG).show();
+                        //如果记住密码被勾选，登陆成功后，将账号密码写入本地
                         if (remPWD.isChecked()) {
                             editor.putBoolean("remember_password", true);
                             editor.putString("account", account);
@@ -222,9 +223,11 @@ public class LoginActivity extends BaseActivity {
                     public void onError(Throwable exception) {
                         BmobException e = (BmobException) exception;
                         if (e.getErrorCode() == 9016) {
-                            Toast.makeText(LoginActivity.this, "网络不可用，请检查你的网络连接", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "网络不可用，请检查你的网络连接",
+                                    Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(LoginActivity.this, "账号或密码错误（password or account is not valid）", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, "账号或密码错误（password or account is not valid）",
+                                    Toast.LENGTH_LONG).show();
                         }
                         Log.i("bmob", "登陆失败：" + e.getMessage() + "," + e.getErrorCode());
                     }

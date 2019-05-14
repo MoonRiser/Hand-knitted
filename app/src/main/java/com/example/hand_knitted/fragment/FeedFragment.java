@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.example.hand_knitted.R;
 import com.example.hand_knitted.adapter.FeedAdapter;
 import com.example.hand_knitted.bean.Post;
@@ -18,8 +20,11 @@ import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.HKPresenter;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.view.IHKView;
+
 import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnItemSelected;
@@ -111,7 +116,7 @@ public class FeedFragment extends Fragment implements IHKView {
         super.onDestroyView();
         unbinder.unbind();
     }
-//才哥牛皮！！！！！
+
 
     public void refreshData() {
         String keyword = tool + "." + group + "." + style;
@@ -123,20 +128,13 @@ public class FeedFragment extends Fragment implements IHKView {
     public void showWorkData(List<Work> list) {
 
         feedAdapter.setWorkList(list);
-        if(isFirstTime){
+        if (isFirstTime) {
             recyclerView.setAdapter(feedAdapter);
-            isFirstTime =false;
-
-        }else{
+            isFirstTime = false;
+        } else {
             feedAdapter.notifyDataSetChanged();
         }
-
         recyclerView.scrollToPosition(0);
-         //   Log.i("feed中的work的list的size为：", list.size() + "");
-
-
-
-
 
     }
 

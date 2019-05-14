@@ -314,10 +314,9 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 }
             });
             viewHolder.share.setOnClickListener(v -> {
-                detailDisplayHelper(work,true);
+                detailDisplayHelper(work, true);
                 if (dialog0s == null) {
                     dialog0s = builder0.create();
-                    Log.i("见鬼了的随拍dialog","被调用了");
                 }
                 dialog0s.show();
                 MyUtils.shotShare(context, dialog0s);
@@ -350,15 +349,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             if (ids.size() != 0) {
                 if (ids.contains(currentWork.getPost().getObjectId())) {
                     isClicked = false;
-                    // Log.i("按道理收藏的按钮次时被点亮一次", "当前的位置：" + position);
-                    //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
                     viewHolder.likes.setChecked(true);
                 } else {
                     isClicked = false;
                     viewHolder.likes.setChecked(false);
                 }
-
-
             }
 
             viewHolder.cardView.setOnClickListener(v -> {
@@ -468,9 +463,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private void commentCommitHelper(List<Comment> comments, Work work, int position) {
 
         CommentAdapter adapter = new CommentAdapter(context, R.layout.item_comment, comments);
-        //  if (comments.size() > 0) {
         listView.setAdapter(adapter);
-        //  }
         submit.setOnClickListener(v1 -> {
             Comment comment = new Comment();
             comment.setAuthor(BmobUser.getCurrentUser(User.class));
@@ -478,9 +471,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             comment.setPost(work.getPost());
             presenter.addComment(comment);
             etComment.setText("");
-            // listView.setAdapter(adapter);
             comments.add(comment);
-            //     adapter.add(comment);
             adapter.notifyDataSetChanged();
             notifyItemChanged(position);
         });

@@ -92,15 +92,16 @@ public class BaseActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (context != null) {
-                ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+                ConnectivityManager mConnectivityManager = (ConnectivityManager)
+                        context.getSystemService(Context.CONNECTIVITY_SERVICE);
                 NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
                 if (mNetworkInfo == null || !mNetworkInfo.isConnected()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("FBI WARNING");
+                    builder.setTitle("WARNING");
                     builder.setMessage("网络无法连接\nunable to connect network");
                     builder.setView(R.layout.dialog_warn);
                     builder.setCancelable(false);
-                    dialog= builder.show();
+                    dialog = builder.show();
                 } else {
                     if (dialog != null) {
                         dialog.dismiss();

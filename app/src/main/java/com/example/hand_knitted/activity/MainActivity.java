@@ -83,6 +83,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             case R.id.setting:
                 showToastLong("占位待实现");
                 break;
+            case R.id.rookie:
+                startActivity(new Intent(this,RookieActivity.class));
+                break;
             case R.id.logout:
                 BmobUser.logOut();
                 Intent intent = new Intent(this, LoginActivity.class);
@@ -142,7 +145,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             @Override
             public void onPageSelected(int position) {
-                //  Log.i("当前显示的碎片的位置：",position+"");
+                //当position为0时，此时为全部作品界面，为1时是个人作品界面
                 switch (position) {
                     case 0:
                         fabSiwth(false);
@@ -173,7 +176,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         TabFragmentAdapter fragmentAdapter = new TabFragmentAdapter(fragmentManager, fragmentList, tabList);
         pager.setAdapter(fragmentAdapter);//给ViewPager设置适配器
         tabs.setupWithViewPager(pager);//将TabLayout和ViewPager关联起来。
-        //tabLayout.setTabsFromPagerAdapter(fragmentAdapter);//给Tabs设置适配器
 
     }
 
@@ -230,13 +232,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
             case R.id.FABwork:
                 intent = new Intent(this, EditPostActivity.class);
-                intent.putExtra("isADD", true);//发表新帖子和更新旧帖子用同一个EditPostActivity，所以用这个标志区分一下
+                intent.putExtra("isADD", true);//发表新帖子和更新旧帖子用同一个EditPostActivity
+                // 所以用这个标志区分一下
                 break;
             default:
                 intent = new Intent(this, EditSnapActivity.class);
                 intent.putExtra("isADD", true);
                 break;
-
         }
         startActivityForResult(intent, MyUtils.POST_EDIT);
 

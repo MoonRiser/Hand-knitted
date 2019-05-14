@@ -46,29 +46,53 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
         Glide.with(this).load(R.drawable.hook).into(hook);
 
 
-
     }
 
 
     @Override
     public void onClick(View v) {
 
+
+        Intent intent = new Intent(this, TutorialActivity.class);
         switch (v.getId()) {
 
-            case R.id.BTskip:
-                skipImp();
+            case R.id.IMGstick:
+                intent.putExtra("option", "67_68");
+                intent.putExtra("num",0);
                 break;
-            default:Intent intent = new Intent(this,TutorialActivity.class);
-            startActivity(intent);break;
+            case R.id.IMGhook:
+                intent.putExtra("option", "67_69");
+                intent.putExtra("num",1);
+                break;
+            case R.id.BTstyle1:
+                intent.putExtra("option", "53_54");
+                intent.putExtra("num",2);
+                break;
+            case R.id.BTstyle2:
+                intent.putExtra("option", "53_59");
+                intent.putExtra("num",3);
+                break;
+            case R.id.BTstyle3:
+                intent.putExtra("option", "53_60");
+                intent.putExtra("num",4);
+                break;
+            case R.id.BTstyle4:
+                intent.putExtra("option", "53_66");
+                intent.putExtra("num",5);
+                break;
+            case R.id.BTstyle5:
+                intent.putExtra("option", "53_63");
+                intent.putExtra("num",6);
+                break;
+
         }
+        startActivity(intent);
     }
 
 
     private void init() {
-        //   stick = findViewById(R.id.IMGstick);
-        //   hook = findViewById(R.id.IMGhook);
-        //   skip = findViewById(R.id.BTskip);
-        skip.setOnClickListener(this);
+
+
         hook.setOnClickListener(this);
         stick.setOnClickListener(this);
         style1.setOnClickListener(this);
@@ -76,7 +100,11 @@ public class RookieActivity extends BaseActivity implements View.OnClickListener
         style3.setOnClickListener(this);
         style4.setOnClickListener(this);
         style5.setOnClickListener(this);
-        editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        editor = sp.edit();
+        skip.setOnClickListener(v -> {
+            skipImp();
+        });
 
 
     }

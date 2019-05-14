@@ -37,6 +37,8 @@ public class MyUtils {
     public static final int[] groupid = {R.id.RBgroup1, R.id.RBgroup2, R.id.RBgroup3, R.id.RBgroup4, R.id.RBgroup5};
     public static final int[] styleid = {R.id.RBstyle1, R.id.RBstyle2, R.id.RBstyle3, R.id.RBstyle4, R.id.RBstyle5};
 
+    public static final String[] option = new String[]{"棒织教程", "钩织教程", "麻花教程", "提花教程", "雪花教程", "流苏教程", "叶子花教程"};
+
     public static final int IMAGE_PICKER = 0;
     public static final int POST_EDIT = 1;
 
@@ -49,13 +51,13 @@ public class MyUtils {
     }
 
 
-    public static Uri getImageContentUri(File imageFile,Context context) {
+    private static Uri getImageContentUri(File imageFile, Context context) {
         String filePath = imageFile.getAbsolutePath();
         Cursor cursor = context.getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-                new String[] { MediaStore.Images.Media._ID },
+                new String[]{MediaStore.Images.Media._ID},
                 MediaStore.Images.Media.DATA + "=? ",
-                new String[] { filePath }, null);
+                new String[]{filePath}, null);
 
         if (cursor != null && cursor.moveToFirst()) {
             int id = cursor.getInt(cursor
@@ -74,52 +76,42 @@ public class MyUtils {
         }
     }
 
-    public static String saveBitmapFile(View toSaveView) {
+    private static String saveBitmapFile(View toSaveView) {
         //开启缓存
         toSaveView.setDrawingCacheEnabled(true);
         //获取bitmap
         Bitmap bitmapTemp = toSaveView.getDrawingCache();
-       // bitmapTemp = Bitmap.createBitmap(bitmapTemp);
+        // bitmapTemp = Bitmap.createBitmap(bitmapTemp);
         //关闭缓存
         toSaveView.setDrawingCacheEnabled(false);
         //保存本地
 
-
         File dataDir = Environment.getExternalStorageDirectory();
-        String temp = dataDir.getPath() + "/DCIM/Camera/"+"share.png";;
-      //  Uri uri = getImageContentUri(temp,context);
+        String temp = dataDir.getPath() + "/DCIM/Camera/" + "share.png";
         //如果这个文件在本地
         File file = new File(temp);
-        //if (file.exists()) {
-     //       return temp;
-      //  }
+
         try {
-            //创建文件
-     //       file.createNewFile();
-            //Bitmap写入文件
+
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, bos);
             bos.flush();
             bos.close();
 
-            //通知文件扫描刷新
-            //  sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-            // ToastUtil.makeText(this, getString(R.string.tupianbaocunchenggongbaocunzai, file.getAbsolutePath()), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return temp;
     }
 
-    private static void ShareImage(Context context, String imagePath){
-        if (imagePath != null){
+    private static void ShareImage(Context context, String imagePath) {
+        if (imagePath != null) {
             Intent intent = new Intent(Intent.ACTION_SEND); // 启动分享发送的属性
             File file = new File(imagePath);
-            //intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));// 分享的内容
-            intent.putExtra(Intent.EXTRA_STREAM, getImageContentUri(file,context));// 分享的内容
+            intent.putExtra(Intent.EXTRA_STREAM, getImageContentUri(file, context));// 分享的内容
             intent.setType("image/*");// 分享发送的数据类型
             Intent chooser = Intent.createChooser(intent, "Share screen shot");
-            if(intent.resolveActivity(context.getPackageManager()) != null){
+            if (intent.resolveActivity(context.getPackageManager()) != null) {
                 context.startActivity(chooser);
             }
         } else {
@@ -127,34 +119,36 @@ public class MyUtils {
         }
     }
 
-    /**截屏分享，供外部调用**/
-    public static void shotShare(Context context, Dialog dialog){
+    /**
+     * 截屏分享，供外部调用
+     **/
+    public static void shotShare(Context context, Dialog dialog) {
         //截屏
         View toSaveView = Objects.requireNonNull(dialog.getWindow()).getDecorView();
-        String path= saveBitmapFile(toSaveView);
+        String path = saveBitmapFile(toSaveView);
         //分享
-        if(path!=null){
-            ShareImage(context,path);
+        if (path != null) {
+            ShareImage(context, path);
         }
     }
 
-    public static String getBmobKey(Context context,String key){
+    static String getBmobKey(Context context, String key) {
 
         Properties properties = new Properties();
         try {
-                //方法一：通过activity中的context攻取setting.properties的FileInputStream
-                InputStream in = context.getAssets().open("appConfig.properties");
-                //方法二：通过class获取setting.properties的FileInputStream
-                //InputStream in = PropertiesUtill.class.getResourceAsStream("/assets/  setting.properties "));
-                properties.load(in);
-            } catch (Exception e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+            //方法一：通过activity中的context攻取setting.properties的FileInputStream
+            InputStream in = context.getAssets().open("appConfig.properties");
+            //方法二：通过class获取setting.properties的FileInputStream
+            //InputStream in = PropertiesUtill.class.getResourceAsStream("/assets/  setting.properties "));
+            properties.load(in);
+        } catch (Exception e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
 
 
-        Log.i("读取到的配置文件为/",properties.getProperty(key));
-       // Log.i("读取到的配置文件为/","0000");
+        Log.i("读取到的配置文件为/", properties.getProperty(key));
+        // Log.i("读取到的配置文件为/","0000");
         return properties.getProperty(key);
 
 

@@ -25,4 +25,11 @@
         android:title="about">
     </item>
 
+    <item
+        android:id="@+id/rookie"
+        app:showAsAction="never"
+        android:title="新手教程">
+
+    </item>
+
 </menu>
