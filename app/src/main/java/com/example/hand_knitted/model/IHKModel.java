@@ -12,7 +12,7 @@ public interface IHKModel {
     void cancelFavorite(Post post);
     void addPost(Post post);
     void deletePost(Post post);
-    void inqueryPost(Boolean isSnap);
+    void inqueryPost();
     void updatePost(Post post);
 
     void addComment(Comment comment);

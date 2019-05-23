@@ -75,7 +75,7 @@ public class HKModel implements IHKModel {
         query.addWhereEqualTo("isSnap", isSnap);//判断查询帖子还是随拍
         query.include("author");
         query.setLimit(500);
-        query.order("createdAt"); //排序
+        query.order("-createdAt"); //降序排序
         query.findObjects(new FindListener<Post>() {
             @Override
             public void done(List<Post> list, BmobException e) {
@@ -147,6 +147,7 @@ public class HKModel implements IHKModel {
                     presenter.updateResult("发帖成功");
                 } else {
                     presenter.updateResult("发帖失败" + e.getErrorCode() + e.getMessage());
+                    Log.i("ERRORR", e.getMessage() + "/" + e.getErrorCode());
                 }
             }
         });
@@ -172,10 +173,10 @@ public class HKModel implements IHKModel {
 
 
     @Override
-    public void inqueryPost(Boolean isSnap) {
+    public void inqueryPost() {
         BmobQuery<Post> query = new BmobQuery<>();
         query.addWhereEqualTo("author", currentUser);
-        query.addWhereEqualTo("isSnap", isSnap);
+        //   query.addWhereEqualTo("isSnap", isSnap);
         query.order("-updatedAt");
         //包含作者信息
         query.include("author");
@@ -222,7 +223,7 @@ public class HKModel implements IHKModel {
             @Override
             public void done(String s, BmobException e) {
                 if (e == null) {
-                    presenter.updateResult("收藏成功");
+                    presenter.updateResult("收藏成功" + "." + post.getObjectId());
                 } else {
                     presenter.updateResult("收藏失败：" + e.getErrorCode() + e.getMessage());
                     Log.i("收藏失败：", e.getErrorCode() + e.getMessage());
@@ -245,13 +246,19 @@ public class HKModel implements IHKModel {
                 if (e == null) {
                     list.get(0).delete(new UpdateListener() {
                                            @Override
-                                           public void done(BmobException e) {
+                                           public void done(BmobException ex) {
 
-                                               if (e == null) {
-                                                   presenter.updateResult("成功取消收藏");
+                                               if (ex == null) {
+                                                   presenter.updateResult("成功取消收藏" + "." + post.getObjectId());
                                                } else {
+                                                /*   if (ex.getErrorCode() == 9015) {
+                                                       presenter.updateResult("成功取消收藏");
+                                                       return;
+                                                   }
+                                                   */
+
                                                    presenter.updateResult("取消收藏失败");
-                                                   Log.i("取消收藏失败：", e.getMessage() + e.getErrorCode());
+                                                   Log.i("取消收藏失败：", ex.getMessage() + "/" + ex.getErrorCode());
 
                                                }
                                            }

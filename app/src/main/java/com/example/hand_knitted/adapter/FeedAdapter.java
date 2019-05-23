@@ -26,7 +26,9 @@ import com.example.hand_knitted.bean.Work;
 import com.example.hand_knitted.presenter.IHKPresenter;
 import com.example.hand_knitted.util.MyUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
@@ -38,9 +40,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Work> workList;
     private Context context;
     private IHKPresenter presenter;
-    private Work currentWork;
+    // private Work currentWork;
     private List<String> ids;
-    private Boolean isClicked = true;
+    private Map<Integer, Boolean> map = new HashMap<>();
+    // private Boolean isClicked = true;
     private AlertDialog.Builder builder;
     private AlertDialog dialog;
     private AlertDialog.Builder builder0;
@@ -75,6 +78,10 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public void setIds(List<String> ids) {
         this.ids = ids;
+    }
+
+    public List<String> getIds() {
+        return ids;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -222,7 +229,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             dialogDetail = LayoutInflater.from(context).inflate(R.layout.dialog_detail, parent, false);
             viewHolderForDetail = new ViewHolderForDetail(dialogDetail);
             builder0 = new AlertDialog.Builder(context);
-            builder0.setTitle("当前帖子");
+            builder0.setTitle("当前作品");
             builder0.setView(dialogDetail);
             builder0.setCancelable(true);
             dialog0 = builder0.create();
@@ -251,7 +258,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         Work work = workList.get(position);
-        currentWork = work;
+        // currentWork = work;
         List<Comment> comments = work.getComments();
 
         if (holder instanceof ViewHolderSnap) {
@@ -268,14 +275,16 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             viewHolder.comment.setText(commentHelper(comments));
 
             //如果当前帖子已经被收藏，则显示出来
+
             if (ids.size() != 0) {
-                if (ids.contains(currentWork.getPost().getObjectId())) {
-                    isClicked = false;
+                if (ids.contains(workList.get(position).getPost().getObjectId())) {
+                    //      isClicked = false;
                     // Log.i("按道理收藏的按钮次时被点亮一次", "当前的位置：" + position);
                     //   Log.i("Like表返回的postid打印", "当前的position"+position+"/"+id + "/当前的id：" + currentWork.getPost().getObjectId());
                     viewHolder.likes.setChecked(true);
+
                 } else {
-                    isClicked = false;
+                    //     isClicked = false;
                     viewHolder.likes.setChecked(false);
                 }
 
@@ -301,17 +310,19 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
             viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                if (isClicked) {
+
+                if (buttonView.isPressed()) {
                     if (isChecked) {
-                        presenter.setFavoritePost(currentWork.getPost());
+                        presenter.setFavoritePost(workList.get(position).getPost());
                         Log.i("点击收藏", "已经被回调");
-                    } else {
-                        presenter.cancelFavoritePost(currentWork.getPost());
+                    }else {
+                        presenter.cancelFavoritePost(workList.get(position).getPost());
                         Log.i("点击取消", "已经被回调");
                     }
-                } else {
-                    isClicked = true;
+
                 }
+
+
             });
             viewHolder.share.setOnClickListener(v -> {
                 detailDisplayHelper(work, true);
@@ -347,11 +358,11 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             //如果当前帖子已经被收藏，则显示出来
             if (ids.size() != 0) {
-                if (ids.contains(currentWork.getPost().getObjectId())) {
-                    isClicked = false;
+                if (ids.contains(workList.get(position).getPost().getObjectId())) {
+                    //     isClicked = false;
                     viewHolder.likes.setChecked(true);
                 } else {
-                    isClicked = false;
+                    //      isClicked = false;
                     viewHolder.likes.setChecked(false);
                 }
             }
@@ -385,17 +396,21 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             });
             viewHolder.likes.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
-                if (isClicked) {
+                //   if (isClicked) {
+                if (buttonView.isPressed()) {
                     if (isChecked) {
-                        presenter.setFavoritePost(currentWork.getPost());
+                        presenter.setFavoritePost(workList.get(position).getPost());
                         Log.i("点击收藏", "已经被回调");
                     } else {
-                        presenter.cancelFavoritePost(currentWork.getPost());
+                        presenter.cancelFavoritePost(workList.get(position).getPost());
                         Log.i("点击取消", "已经被回调");
                     }
-                } else {
-                    isClicked = true;
                 }
+
+
+                //     } else {
+                //        isClicked = true;
+                //     }
             });
 
         }

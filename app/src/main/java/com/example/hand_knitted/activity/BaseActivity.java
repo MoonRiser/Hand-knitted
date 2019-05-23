@@ -8,11 +8,13 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.bmob.v3.BmobUser;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.SoundPool;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -26,6 +28,9 @@ public class BaseActivity extends AppCompatActivity {
     private IntentFilter intentFilter;
     private NetWorkChangeRecevier netWorkChangeRecevier;
     private AlertDialog dialog;
+
+    private SoundPool soundPool;
+    private int soundID;
 
 
     @Override
@@ -41,6 +46,7 @@ public class BaseActivity extends AppCompatActivity {
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         netWorkChangeRecevier = new NetWorkChangeRecevier();
+        initSound();
     }
 
 
@@ -110,5 +116,24 @@ public class BaseActivity extends AppCompatActivity {
             }
         }
     }
+
+
+    @SuppressLint("NewApi")
+    private void initSound(){
+        soundPool = new SoundPool.Builder().build();
+        soundID = soundPool.load(this,R.raw.open_ended,1);
+    }
+
+    protected void playSound() {
+        soundPool.play(
+                soundID,
+                0.5f,      //左耳道音量【0~1】
+                0.5f,      //右耳道音量【0~1】
+                0,         //播放优先级【0表示最低优先级】
+                0,         //循环模式【0表示循环一次，-1表示一直循环，其他表示数字+1表示当前数字对应的循环次数】
+                1          //播放速度【1是正常，范围从0~2】
+        );
+    }
+
 
 }

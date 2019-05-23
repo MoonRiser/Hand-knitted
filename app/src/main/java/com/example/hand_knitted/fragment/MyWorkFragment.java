@@ -80,7 +80,7 @@ public class MyWorkFragment extends Fragment implements IHKView {
         progressBar = view.findViewById(R.id.PB2);
 
         myWorkAdapter = new MyWorkAdapter(presenter);
-        presenter.inqueryPost(isSnap);
+        presenter.inqueryPost();
         recyclerView.setLayoutManager(new
                 LinearLayoutManager(getActivity(),RecyclerView.VERTICAL,false));
         refresh.setOnClickListener(v -> reFreshData());
@@ -105,7 +105,7 @@ public class MyWorkFragment extends Fragment implements IHKView {
 
 
     public void reFreshData() {
-        presenter.inqueryPost(isSnap);
+        presenter.inqueryPost();
     }
 
     @Override

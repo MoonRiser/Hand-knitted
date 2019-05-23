@@ -128,6 +128,7 @@ public class FeedFragment extends Fragment implements IHKView {
     public void showWorkData(List<Work> list) {
 
         feedAdapter.setWorkList(list);
+        // feedAdapter.setIds(hkPresenter.inqueryLikePost());
         if (isFirstTime) {
             recyclerView.setAdapter(feedAdapter);
             isFirstTime = false;
@@ -146,12 +147,27 @@ public class FeedFragment extends Fragment implements IHKView {
     @Override
     public void showResultToast(String info) {
 
-        if (toast == null) {
-            toast = Toast.makeText(this.getActivity(), info, Toast.LENGTH_SHORT);
-        } else {
-            toast.setText(info);
+        if (info != null) {
+            String[] str = info.split("\\.");
+            if ("收藏成功".equals(str[0])) {
+                feedAdapter.getIds().add(str[1]);
+            }
+            if ("成功取消收藏".equals(str[0])) {
+                feedAdapter.getIds().remove(str[1]);
+            }
+
+
+            if (toast == null) {
+                toast = Toast.makeText(this.getActivity(), str[0], Toast.LENGTH_SHORT);
+            } else {
+                toast.setText(str[0]);
+            }
+            toast.show();
+
+
         }
-        toast.show();
+
+
     }
 
     @Override

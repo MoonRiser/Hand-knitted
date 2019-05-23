@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             app:counterEnabled="true"
-            app:counterMaxLength="500">
+            app:counterMaxLength="300">
 
             <EditText
                 android:id="@+id/ETcontents"
@@ -95,7 +95,7 @@
                 android:gravity="top|start"
                 android:hint="please type the content here"
                 android:inputType="textMultiLine"
-                android:maxLength="500"
+                android:maxLength="300"
                 android:maxLines="15"
                 android:minLines="8"
                 android:scrollHorizontally="false" />

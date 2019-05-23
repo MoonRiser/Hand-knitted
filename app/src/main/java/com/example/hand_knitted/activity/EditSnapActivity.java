@@ -123,7 +123,7 @@ public class EditSnapActivity extends BaseActivity implements View.OnClickListen
                 finish();
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -203,15 +203,13 @@ public class EditSnapActivity extends BaseActivity implements View.OnClickListen
         }
 
 
-        //  BmobFile img = new BmobFile(new File(picPath));
+
         final String[] filePaths = new String[1];
         filePaths[0] = picPath;
         BmobFile.uploadBatch(filePaths, new UploadBatchListener() {
 
             @Override
             public void onSuccess(List<BmobFile> files, List<String> urls) {
-
-                Log.i("看到这个表明已经有图片上传成功", "");
 
                 if (urls.size() == filePaths.length) {//如果数量相等，则代表文件全部上传完成
                     post.setImage(files.get(0));

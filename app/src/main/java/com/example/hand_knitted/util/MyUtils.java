@@ -42,6 +42,8 @@ public class MyUtils {
     public static final int IMAGE_PICKER = 0;
     public static final int POST_EDIT = 1;
 
+
+
     //获取系统当前时间/以字符串形式存储
     public static String getCurrentDate() {
         Date date = new Date(System.currentTimeMillis());
@@ -80,19 +82,27 @@ public class MyUtils {
         //开启缓存
         toSaveView.setDrawingCacheEnabled(true);
         //获取bitmap
-        Bitmap bitmapTemp = toSaveView.getDrawingCache();
-        // bitmapTemp = Bitmap.createBitmap(bitmapTemp);
+        toSaveView.buildDrawingCache();
+        //  Bitmap bitmapTempp = toSaveView.getDrawingCache();
+        if (toSaveView.getDrawingCache() == null) {
+            return null;
+        }
+        // Log.i("操蛋的宽高分别为：",bitmapTempp.getWidth()+"/"+bitmapTempp.getHeight());
+        Bitmap bitmapTemp = Bitmap.createBitmap(toSaveView.getDrawingCache());
         //关闭缓存
         toSaveView.setDrawingCacheEnabled(false);
         //保存本地
 
         File dataDir = Environment.getExternalStorageDirectory();
-        String temp = dataDir.getPath() + "/DCIM/Camera/" + "share.png";
+        String temp = dataDir.getPath() + "/Download/" + "share.png";
+        // String temp = dataDir.getPath() + "/DCIM/Camera/" + "share.png";
         //如果这个文件在本地
         File file = new File(temp);
 
+
         try {
 
+            file.createNewFile();
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             bitmapTemp.compress(Bitmap.CompressFormat.PNG, 100, bos);
             bos.flush();

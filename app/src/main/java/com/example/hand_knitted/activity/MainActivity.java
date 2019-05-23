@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.darkMode:
+                playSound();
                 darkModeSwith();
                 break;
             case R.id.about:
@@ -207,16 +208,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             fabwork.setOnClickListener(v -> {
 
                 ((FeedFragment)f1).setSnap(false);
-                ((MyWorkFragment)f2).setSnap(false);
+              //  ((MyWorkFragment)f2).setSnap(false);
                 ((FeedFragment) f1).refreshData();
-                ((MyWorkFragment) f2).reFreshData();
+             //   ((MyWorkFragment) f2).reFreshData();
                 fab.collapse();
             });
             fabsnap.setOnClickListener(v -> {
                 ((FeedFragment)f1).setSnap(true);
-                ((MyWorkFragment)f2).setSnap(true);
+            //    ((MyWorkFragment)f2).setSnap(true);
                 ((FeedFragment) f1).refreshData();
-                ((MyWorkFragment) f2).reFreshData();
+         //       ((MyWorkFragment) f2).reFreshData();
                 fab.collapse();
             });
         }

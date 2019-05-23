@@ -51,4 +51,6 @@ public class MyApplication extends Application {
         imagePicker.setOutPutY(1000);                         //保存文件的高度。单位像素
     }
 
+
+
 }
